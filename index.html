@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模态窗口</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(150px);
+            -webkit-backdrop-filter: blur(150px);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            z-index: 1001;
+            width: 400px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        /* 光源线基础样式 */
+        .glow-line {
+            position: absolute;
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.00) 0%, 
+                rgba(255, 255, 255, 0.60) 50%, 
+                rgba(255, 255, 255, 0.00) 100%
+            );
+            opacity: 0.6;
+            z-index: 2;
+        }
+
+        /* 左上角水平光源线 */
+        .glow-line-top-left {
+            top: 0;
+            left: 20px;
+        }
+
+        /* 左侧顶部垂直光源线 */
+        .glow-line-left {
+            top: 20px;
+            left: 0;
+            width: 1px;
+            height: 100px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.00) 0%, 
+                rgba(255, 255, 255, 0.60) 50%, 
+                rgba(255, 255, 255, 0.00) 100%
+            );
+        }
+
+        /* 右侧底部垂直光源线 - 更新渐变颜色 */
+        .glow-line-bottom-right {
+            bottom: 20px;
+            right: 0;
+            width: 1px;
+            height: 100px;
+            background: linear-gradient(180deg, 
+                rgba(247, 255, 152, 0.00) 0%, 
+                rgba(247, 255, 152, 0.60) 50%, 
+                rgba(247, 255, 152, 0.00) 100%
+            );
+            opacity: 0.6;
+            z-index: 2;
+        }
+
+        /* 顶部光源改用新的类名 */
+        .modal .top-glow {
+            content: '';
+            position: absolute;
+            width: 352px;
+            height: 68px;
+            border-radius: 352.168px;
+            background: #7D8081;
+            opacity: 0.8;
+            top: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: blur(50px);
+            z-index: -1;
+        }
+
+        /* 右下角光源 */
+        .modal::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 300px;
+            border-radius: 600px;
+            background: #F7FF98;
+            opacity: 0.2;
+            bottom: -250px;
+            right: -400px;
+            filter: blur(50px);
+            z-index: -1;
+        }
+
+        /* 成功图标样式 */
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #3a3a3a;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon::after {
+            content: "✓";
+            font-size: 32px;
+            color: #e5ff7d;
+        }
+
+        /* 标题和文本样式 */
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 32px;
+        }
+
+        /* 按钮容器 */
+        .button-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 40px;
+            border-radius: 24px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-detail {
+            background-color: #3a3a3a;
+            color: #e5ff7d;
+        }
+
+        .btn-apply {
+            background-color: #e5ff7d;
+            color: #2a2a2a;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        #modal-toggle {
+            display: none;
+        }
+
+        #modal-toggle:checked ~ .modal-overlay {
+            display: block;
+        }
+
+        .open-modal-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <label for="modal-toggle" class="open-modal-btn">Click Modal</label>
+    <input type="checkbox" id="modal-toggle">
+    <div class="modal-overlay">
+        <div class="modal">
+            <div class="top-glow"></div>
+            <div class="glow-line glow-line-top-left"></div>
+            <div class="glow-line glow-line-left"></div>
+            <div class="glow-line glow-line-bottom-right"></div>
+            <div class="success-icon"></div>
+            <h2 class="modal-title">No action necessary at this time.</h2>
+            <p class="modal-text">The previously submitted data points are under review</p>
+            <p class="modal-text">To appeal, please contact To appeal To appea</p>
+            <div class="button-container">
+                <button class="btn btn-detail">View Detail</button>
+                <button class="btn btn-apply">Apply</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalToggle = document.getElementById('modal-toggle');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const modal = document.querySelector('.modal');
+
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                modalToggle.checked = false;
+            }
+        });
+
+        modal.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+</script>
+</html>
