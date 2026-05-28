@@ -114,6 +114,11 @@
   }
   .hero-content { position: relative; z-index: 1; max-width: 760px; }
 
+  #heroParticles {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
@@ -646,6 +651,7 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
+  <canvas id="heroParticles" aria-hidden="true"></canvas>
   <div class="hero-content">
     <div class="hero-eyebrow">Claude Code × Figma</div>
     <h1>让 Claude Code<br>在 Figma 中<em>画图标</em></h1>
@@ -1037,6 +1043,111 @@
 </footer>
 
 <script>
+  // ── Hero particle animation ──
+  (function () {
+    const canvas = document.getElementById('heroParticles');
+    const ctx = canvas.getContext('2d');
+    const COLORS = ['#E07A5F', '#D4A574'];
+    const COUNT = 35;
+    let W, H, dpr, particles, raf;
+
+    function isDark() {
+      return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+
+    function resize() {
+      const hero = canvas.parentElement;
+      const rect = hero.getBoundingClientRect();
+      dpr = window.devicePixelRatio || 1;
+      W = rect.width;
+      H = rect.height;
+      canvas.width  = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.scale(dpr, dpr);
+    }
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function makeParticle() {
+      return {
+        x:       rand(0, W),
+        y:       rand(0, H),
+        r:       rand(2, 5),
+        color:   COLORS[Math.random() < 0.55 ? 0 : 1],
+        // drift speed
+        vx:      rand(-0.18, 0.18),
+        vy:      rand(-0.14, 0.14),
+        // sine-wave wobble
+        wx:      rand(0.0004, 0.0012),  // angular freq x
+        wy:      rand(0.0003, 0.001),   // angular freq y
+        wax:     rand(8, 22),           // wobble amplitude x
+        way:     rand(6, 18),           // wobble amplitude y
+        phase:   rand(0, Math.PI * 2),  // phase offset
+        // opacity pulse
+        baseOp:  rand(0.18, 0.38),
+        pulseAmp: rand(0.06, 0.14),
+        pulseFreq: rand(0.0006, 0.0016),
+        pulsePhase: rand(0, Math.PI * 2),
+      };
+    }
+
+    function init() {
+      resize();
+      particles = Array.from({ length: COUNT }, makeParticle);
+    }
+
+    function draw(ts) {
+      ctx.clearRect(0, 0, W, H);
+      const dark = isDark();
+      const opBoost = dark ? 0.18 : 0;
+
+      particles.forEach(p => {
+        // position: base drift + sine wobble
+        const px = p.x + Math.sin(ts * p.wx + p.phase) * p.wax;
+        const py = p.y + Math.cos(ts * p.wy + p.phase) * p.way;
+
+        // advance base position slowly
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // wrap within bounds
+        if (p.x < -30)  p.x = W + 30;
+        if (p.x > W+30) p.x = -30;
+        if (p.y < -30)  p.y = H + 30;
+        if (p.y > H+30) p.y = -30;
+
+        // opacity pulse
+        const op = Math.min(1, p.baseOp + opBoost + Math.sin(ts * p.pulseFreq + p.pulsePhase) * p.pulseAmp);
+
+        ctx.save();
+        ctx.globalAlpha = op;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur  = p.r * 3.5;
+        ctx.beginPath();
+        ctx.arc(px, py, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    init();
+    raf = requestAnimationFrame(draw);
+
+    let resizeDebounce;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeDebounce);
+      resizeDebounce = setTimeout(() => {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        resize();
+      }, 150);
+    });
+  })();
+
   // ── Theme toggle ──
   const html = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
