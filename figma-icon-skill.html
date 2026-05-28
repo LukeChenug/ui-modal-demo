@@ -412,6 +412,190 @@
     footer { flex-direction: column; gap: 16px; text-align: center; }
     .cta-box { padding: 48px 24px; }
   }
+
+  /* ── ARCHITECTURE DIAGRAM ── */
+  .arch { border-top: 1px solid var(--border); }
+  .arch-diagram {
+    margin-top: 56px; display: flex; flex-direction: column; align-items: center; gap: 0;
+    position: relative;
+  }
+  .arch-layer {
+    width: 100%; max-width: 760px; border-radius: 16px; padding: 28px 32px;
+    border: 1.5px solid; position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .arch-layer:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.07); }
+  .arch-layer-user   { background: rgba(224,122,95,0.06); border-color: rgba(224,122,95,0.25); }
+  .arch-layer-ai     { background: rgba(126,184,247,0.07); border-color: rgba(126,184,247,0.3); }
+  .arch-layer-bridge { background: rgba(40,202,65,0.06);  border-color: rgba(40,202,65,0.25); }
+  .arch-layer-figma  { background: rgba(155,89,182,0.06); border-color: rgba(155,89,182,0.25); }
+
+  .arch-layer-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .arch-layer-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .badge-user   { background: rgba(224,122,95,0.15); color: var(--terracotta); }
+  .badge-ai     { background: rgba(126,184,247,0.2); color: #3a7fc1; }
+  .badge-bridge { background: rgba(40,202,65,0.15);  color: #1a8a2e; }
+  .badge-figma  { background: rgba(155,89,182,0.15); color: #7b4fa6; }
+
+  .arch-layer-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .arch-steps-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .arch-step-chip {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--dark);
+    background: rgba(255,255,255,0.7); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 8px;
+    backdrop-filter: blur(4px);
+  }
+  .arch-step-chip .chip-icon { font-size: 14px; }
+  .arch-arrow-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    height: 52px; position: relative; z-index: 1;
+  }
+  .arch-arrow-line {
+    width: 2px; flex: 1;
+    background: linear-gradient(to bottom, var(--border), var(--terracotta));
+    position: relative; overflow: visible;
+  }
+  .arch-arrow-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--terracotta);
+    position: absolute; left: 50%; transform: translateX(-50%);
+    animation: flowDot 1.8s ease-in-out infinite;
+  }
+  @keyframes flowDot {
+    0%   { top: 0%; opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .arch-arrow-head {
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--terracotta);
+  }
+  .arch-arrow-wrap:nth-child(4) .arch-arrow-dot { animation-delay: 0.6s; }
+  .arch-arrow-wrap:nth-child(6) .arch-arrow-dot { animation-delay: 1.2s; }
+
+  /* ── WORKFLOW TIMELINE ── */
+  .workflow { border-top: 1px solid var(--border); }
+  .timeline {
+    margin-top: 56px; display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .timeline::before {
+    content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, var(--terracotta), rgba(224,122,95,0.1));
+  }
+  .tl-item {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 0 0 32px 0; position: relative;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-left {
+    display: flex; flex-direction: column; align-items: center;
+    flex-shrink: 0; width: 56px; position: relative; z-index: 1;
+  }
+  .tl-num {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--cream); border: 2px solid var(--terracotta);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    box-shadow: 0 0 0 4px rgba(224,122,95,0.1);
+  }
+  .tl-card {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 4px;
+  }
+  .tl-card:hover { transform: translateX(4px); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+  .tl-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .tl-step-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--terracotta); background: rgba(224,122,95,0.1);
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .tl-card h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .tl-card p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 4px; }
+  .tl-code {
+    margin-top: 10px; background: #1a1a1a; border-radius: 8px;
+    padding: 10px 14px; font-family: 'SF Mono','Fira Code',monospace;
+    font-size: 12px; color: #FAF9F6; line-height: 1.6;
+  }
+  .tl-code .tc-key { color: #7EB8F7; }
+  .tl-code .tc-val { color: #E07A5F; }
+  .tl-code .tc-str { color: #28CA41; }
+
+  @media (min-width: 900px) {
+    .timeline {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 24px; align-items: start;
+    }
+    .timeline::before { display: none; }
+    .tl-item { flex-direction: column; gap: 12px; padding-bottom: 0; }
+    .tl-left { flex-direction: row; width: auto; }
+    .tl-num { width: 48px; height: 48px; font-size: 18px; border-radius: 12px; }
+    .tl-card { margin-top: 0; }
+  }
+
+  /* ── TECH DETAILS ── */
+  .tech { border-top: 1px solid var(--border); }
+  .tech-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 56px;
+  }
+  .tech-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .tech-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--terracotta), rgba(224,122,95,0.3));
+    border-radius: 16px 16px 0 0;
+  }
+  .tech-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.07); }
+  .tech-card-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(224,122,95,0.1); border: 1.5px solid rgba(224,122,95,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 20px;
+  }
+  .tech-card h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 20px; }
+  .tech-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .tech-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .tech-item-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--terracotta); flex-shrink: 0; margin-top: 7px;
+  }
+  .tech-item-body { flex: 1; }
+  .tech-item-name { font-size: 14px; font-weight: 500; }
+  .tech-item-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .tech-tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px; margin-left: 6px;
+    background: rgba(224,122,95,0.1); color: var(--terracotta);
+    vertical-align: middle;
+  }
+
+  @media (max-width: 768px) {
+    .tech-grid { grid-template-columns: 1fr; }
+    .arch-steps-row { gap: 6px; }
+    .arch-step-chip { font-size: 12px; padding: 5px 10px; }
+  }
+
 </style>
 </head>
 <body>
@@ -463,3 +647,544 @@
     </div>
   </div>
 </section>
+
+<!-- FEATURE 1: 画图标 -->
+<section class="feature" id="features">
+  <div class="section-inner">
+    <div class="feature-grid">
+      <div class="feature-visual reveal">
+        <div class="icon-grid-demo">
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </div>
+          <div class="icon-cell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12 19.79 19.79 0 0 1 1.93 3.4 2 2 0 0 1 3.9 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.91 6.91l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="icon-cell active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="feature-text reveal reveal-delay-1">
+        <div class="feature-number">功能 01</div>
+        <h2 class="feature-title">用文字<em>画图标</em></h2>
+        <p class="feature-desc">描述你需要的图标，Claude 直接在 Figma 画布上生成。支持线框、填充、双色三种风格，风格统一，开箱即用。</p>
+        <ul class="feature-list">
+          <li>自然语言描述，秒级生成</li>
+          <li>线框 / 填充 / 双色三种样式</li>
+          <li>24×24 标准网格，像素对齐</li>
+          <li>批量生成整套图标集</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 2: 整理图标 -->
+<section class="feature">
+  <div class="section-inner">
+    <div class="feature-grid reverse">
+      <div class="feature-text reveal">
+        <div class="feature-number">功能 02</div>
+        <h2 class="feature-title">自动<em>整理图标</em></h2>
+        <p class="feature-desc">告别手动对齐的烦恼。Claude 自动将图标归类到对应框架，统一间距、命名规范，让你的 Figma 文件始终整洁。</p>
+        <ul class="feature-list">
+          <li>按类别自动分组到 Frame</li>
+          <li>统一 padding 与间距规则</li>
+          <li>规范命名：category/icon-name/style</li>
+          <li>自动对齐，消除像素偏移</li>
+        </ul>
+      </div>
+      <div class="feature-visual reveal reveal-delay-1">
+        <div class="organize-demo">
+          <div class="org-frame highlight">
+            <div class="org-frame-label">Navigation / 24px</div>
+            <div class="org-icons">
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            </div>
+          </div>
+          <div class="org-frame">
+            <div class="org-frame-label">Commerce / 24px</div>
+            <div class="org-icons">
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            </div>
+          </div>
+          <div class="org-frame">
+            <div class="org-frame-label">Media / 24px</div>
+            <div class="org-icons">
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></div>
+              <div class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3: 同步图标 -->
+<section class="feature">
+  <div class="section-inner">
+    <div class="feature-grid">
+      <div class="feature-visual reveal">
+        <div class="sync-demo">
+          <div class="sync-row">
+            <div class="sync-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="sync-info"><div class="sync-name">Figma 组件库</div><div class="sync-meta">icons/navigation, icons/commerce</div></div>
+            <span class="sync-badge done">已同步</span>
+          </div>
+          <div class="sync-row">
+            <div class="sync-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <div class="sync-info"><div class="sync-name">代码仓库</div><div class="sync-meta">src/assets/icons/*.svg</div></div>
+            <span class="sync-badge done">已推送</span>
+          </div>
+          <div class="sync-row">
+            <div class="sync-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <div class="sync-info"><div class="sync-name">导出 PNG / SVG</div><div class="sync-meta">1x · 2x · 3x 多倍图</div></div>
+            <span class="sync-badge pending">导出中</span>
+          </div>
+          <div class="sync-row">
+            <div class="sync-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="sync-info"><div class="sync-name">设计 Token</div><div class="sync-meta">icons.json · 自动更新</div></div>
+            <span class="sync-badge pending">待处理</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-text reveal reveal-delay-1">
+        <div class="feature-number">功能 03</div>
+        <h2 class="feature-title">一键<em>同步图标</em></h2>
+        <p class="feature-desc">从 Figma 到代码库，全程自动化。Claude 将图标发布为组件、导出多格式文件，并直接推送到你的代码仓库。</p>
+        <ul class="feature-list">
+          <li>发布到 Figma 团队组件库</li>
+          <li>导出 SVG / PNG 多倍图</li>
+          <li>自动推送到 Git 仓库</li>
+          <li>生成 Design Token JSON</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="section-inner">
+    <div class="stats-grid">
+      <div class="stat-item reveal"><div class="stat-number">3×</div><div class="stat-label">图标生产效率提升</div></div>
+      <div class="stat-item reveal reveal-delay-1"><div class="stat-number">100%</div><div class="stat-label">命名与尺寸规范一致</div></div>
+      <div class="stat-item reveal reveal-delay-2"><div class="stat-number">0</div><div class="stat-label">手动对齐操作</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="section-inner">
+    <div class="section-label reveal">使用方式</div>
+    <h2 class="section-title reveal reveal-delay-1">三步开始工作</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <h3>安装技能</h3>
+        <p>在 Claude Code 中运行安装命令，授权 Figma 访问权限，完成一次性配置。</p>
+        <svg class="step-connector" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16H24M24 16L18 10M24 16L18 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">02</div>
+        <h3>描述图标</h3>
+        <p>用中文告诉 Claude 你需要什么图标，指定风格、数量和用途，其余交给 AI。</p>
+        <svg class="step-connector" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 16H24M24 16L18 10M24 16L18 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">03</div>
+        <h3>同步使用</h3>
+        <p>图标自动出现在 Figma 画布，整理完毕后一键同步到组件库和代码仓库。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE OVERVIEW -->
+<section class="arch" id="arch">
+  <div class="section-inner">
+    <div class="section-label reveal">系统架构</div>
+    <h2 class="section-title reveal reveal-delay-1">架构总览</h2>
+    <p class="section-desc reveal reveal-delay-2">从自然语言到 Figma 画布，四层架构协同工作，每一步都有迹可循。</p>
+    <div class="arch-diagram reveal">
+
+      <!-- Layer 1: User -->
+      <div class="arch-layer arch-layer-user">
+        <div class="arch-layer-header">
+          <span class="arch-layer-badge badge-user">用户层</span>
+          <span class="arch-layer-title">User Layer — 自然语言输入</span>
+        </div>
+        <div class="arch-steps-row">
+          <div class="arch-step-chip"><span class="chip-icon">💬</span> 描述你想要的图标</div>
+          <div class="arch-step-chip"><span class="chip-icon">🎯</span> 指定风格与尺寸</div>
+          <div class="arch-step-chip"><span class="chip-icon">📦</span> 批量或单个生成</div>
+        </div>
+      </div>
+
+      <!-- Arrow 1 -->
+      <div class="arch-arrow-wrap">
+        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
+        <div class="arch-arrow-head"></div>
+      </div>
+
+      <!-- Layer 2: AI -->
+      <div class="arch-layer arch-layer-ai">
+        <div class="arch-layer-header">
+          <span class="arch-layer-badge badge-ai">AI 层</span>
+          <span class="arch-layer-title">Claude Code 智能层 — 理解与生成</span>
+        </div>
+        <div class="arch-steps-row">
+          <div class="arch-step-chip"><span class="chip-icon">🧠</span> 意图解析</div>
+          <div class="arch-step-chip"><span class="chip-icon">🎨</span> 风格匹配</div>
+          <div class="arch-step-chip"><span class="chip-icon">✏️</span> SVG 路径生成</div>
+          <div class="arch-step-chip"><span class="chip-icon">✅</span> 质量校验</div>
+        </div>
+      </div>
+
+      <!-- Arrow 2 -->
+      <div class="arch-arrow-wrap">
+        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
+        <div class="arch-arrow-head"></div>
+      </div>
+
+      <!-- Layer 3: Bridge -->
+      <div class="arch-layer arch-layer-bridge">
+        <div class="arch-layer-header">
+          <span class="arch-layer-badge badge-bridge">桥接层</span>
+          <span class="arch-layer-title">MCP 桥接层 — 协议通信</span>
+        </div>
+        <div class="arch-steps-row">
+          <div class="arch-step-chip"><span class="chip-icon">🔌</span> Figma MCP Server</div>
+          <div class="arch-step-chip"><span class="chip-icon">⚡</span> JSON-RPC 调用</div>
+          <div class="arch-step-chip"><span class="chip-icon">🔄</span> 双向数据同步</div>
+        </div>
+      </div>
+
+      <!-- Arrow 3 -->
+      <div class="arch-arrow-wrap">
+        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
+        <div class="arch-arrow-head"></div>
+      </div>
+
+      <!-- Layer 4: Figma -->
+      <div class="arch-layer arch-layer-figma">
+        <div class="arch-layer-header">
+          <span class="arch-layer-badge badge-figma">执行层</span>
+          <span class="arch-layer-title">Figma 执行层 — 画布操作</span>
+        </div>
+        <div class="arch-steps-row">
+          <div class="arch-step-chip"><span class="chip-icon">🖼️</span> 创建 Frame</div>
+          <div class="arch-step-chip"><span class="chip-icon">📐</span> 插入路径</div>
+          <div class="arch-step-chip"><span class="chip-icon">⚙️</span> 设置属性</div>
+          <div class="arch-step-chip"><span class="chip-icon">🧩</span> 组件化发布</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW TIMELINE -->
+<section class="workflow" id="workflow">
+  <div class="section-inner">
+    <div class="section-label reveal">执行流程</div>
+    <h2 class="section-title reveal reveal-delay-1">工作流程</h2>
+    <p class="section-desc reveal reveal-delay-2">从一句话描述到可用组件，七个步骤，全程自动化。</p>
+    <div class="timeline">
+
+      <div class="tl-item reveal">
+        <div class="tl-left">
+          <div class="tl-num">📝</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 01</span>
+            <h3>描述需求</h3>
+          </div>
+          <p>用自然语言告诉 Claude 你需要什么图标，包括语义、尺寸和风格。</p>
+          <div class="tl-code"><span class="tc-str">"画一个24px的设置齿轮图标，线性风格，2px描边"</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal reveal-delay-1">
+        <div class="tl-left">
+          <div class="tl-num">🧠</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 02</span>
+            <h3>意图解析</h3>
+          </div>
+          <p>Claude 理解图标语义，提取尺寸、风格、描边等结构化参数。</p>
+          <div class="tl-code"><span class="tc-key">size</span>: <span class="tc-val">24</span>, <span class="tc-key">style</span>: <span class="tc-str">"outline"</span>, <span class="tc-key">stroke</span>: <span class="tc-val">2</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal reveal-delay-2">
+        <div class="tl-left">
+          <div class="tl-num">🎨</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 03</span>
+            <h3>SVG 生成</h3>
+          </div>
+          <p>基于设计规范生成标准 SVG 路径数据，确保视觉语义准确。</p>
+          <div class="tl-code"><span class="tc-key">&lt;path</span> <span class="tc-val">d</span>=<span class="tc-str">"M12 2a10 10 0..."</span> <span class="tc-key">/&gt;</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal">
+        <div class="tl-left">
+          <div class="tl-num">✅</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 04</span>
+            <h3>质量校验</h3>
+          </div>
+          <p>自动检查像素对齐、描边一致性和视觉重量平衡，不合格则重新生成。</p>
+          <div class="tl-code"><span class="tc-key">pixel_align</span>: <span class="tc-str">✓</span>  <span class="tc-key">stroke_weight</span>: <span class="tc-str">✓</span>  <span class="tc-key">balance</span>: <span class="tc-str">✓</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal reveal-delay-1">
+        <div class="tl-left">
+          <div class="tl-num">🔌</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 05</span>
+            <h3>MCP 调用</h3>
+          </div>
+          <p>通过 Figma MCP 协议将 SVG 数据写入画布，创建矢量节点。</p>
+          <div class="tl-code"><span class="tc-key">figma.createVector</span>(<span class="tc-val">paths</span>, <span class="tc-val">props</span>)</div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal reveal-delay-2">
+        <div class="tl-left">
+          <div class="tl-num">📐</div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 06</span>
+            <h3>自动整理</h3>
+          </div>
+          <p>按命名规范归类到对应 Frame，统一间距，保持文件整洁有序。</p>
+          <div class="tl-code"><span class="tc-str">Icons/System/settings/outline</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item reveal" style="grid-column: 1 / -1;">
+        <div class="tl-left">
+          <div class="tl-num">🚀</div>
+        </div>
+        <div class="tl-card" style="max-width: 480px;">
+          <div class="tl-card-header">
+            <span class="tl-step-badge">Step 07</span>
+            <h3>同步发布</h3>
+          </div>
+          <p>更新 Figma 组件库，导出多格式资源，推送 SVG 到代码仓库，生成 Design Token。</p>
+          <div class="tl-code"><span class="tc-key">publish</span> → <span class="tc-str">component_lib</span>  <span class="tc-key">export</span> → <span class="tc-str">git push</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECH DETAILS -->
+<section class="tech" id="tech">
+  <div class="section-inner">
+    <div class="section-label reveal">技术规格</div>
+    <h2 class="section-title reveal reveal-delay-1">技术细节</h2>
+    <p class="section-desc reveal reveal-delay-2">每一个输出都符合工业级设计标准，可直接用于生产环境。</p>
+    <div class="tech-grid">
+
+      <!-- Card 1 -->
+      <div class="tech-card reveal">
+        <div class="tech-card-icon">✏️</div>
+        <h3>支持的图标风格</h3>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">Outline 线性 <span class="tech-tag">最常用</span></div>
+            <div class="tech-item-desc">1.5px / 2px 描边，圆角端点，轻盈通透</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">Filled 填充</div>
+            <div class="tech-item-desc">实心图标，视觉重量强，适合强调状态</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">Duotone 双色</div>
+            <div class="tech-item-desc">主色 + 辅色叠加，层次丰富，品牌感强</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">Animated 动态 <span class="tech-tag">即将上线</span></div>
+            <div class="tech-item-desc">Lottie JSON 导出，支持循环与触发动画</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="tech-card reveal reveal-delay-1">
+        <div class="tech-card-icon">📐</div>
+        <h3>设计规范保障</h3>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">像素网格对齐</div>
+            <div class="tech-item-desc">支持 16×16、20×20、24×24、32×32 标准尺寸</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">统一圆角半径</div>
+            <div class="tech-item-desc">全套图标圆角值一致，视觉语言统一</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">一致的视觉重量</div>
+            <div class="tech-item-desc">描边粗细、填充密度跨图标自动校准</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">自动 Padding 计算</div>
+            <div class="tech-item-desc">光学边距补偿，确保视觉居中而非数学居中</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="tech-card reveal reveal-delay-2">
+        <div class="tech-card-icon">📦</div>
+        <h3>输出格式</h3>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">Figma Component <span class="tech-tag">可复用</span></div>
+            <div class="tech-item-desc">发布到团队组件库，支持 Variant 切换</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">SVG 优化代码</div>
+            <div class="tech-item-desc">SVGO 压缩，移除冗余属性，体积最小化</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">PNG 多倍图</div>
+            <div class="tech-item-desc">自动导出 @1x @2x @3x，适配全平台</div>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-dot"></div>
+          <div class="tech-item-body">
+            <div class="tech-item-name">React / Vue 组件</div>
+            <div class="tech-item-desc">生成 TypeScript 组件代码，props 类型安全</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="section-inner">
+    <div class="cta-box">
+      <h2>开始用 AI 画图标</h2>
+      <p>加入设计师和工程师的工作流，让 Claude Code 成为你的图标设计助手。</p>
+      <div class="cta-install">
+        <span class="cta-install-label">$</span>
+        <span>claude /figma-icons install</span>
+      </div>
+      <br>
+      <a href="#" class="btn-primary" style="font-size:16px; padding: 16px 36px;">免费安装技能</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>© 2026 Figma 图标技能 · 基于 Claude Code 构建</div>
+  <div style="display:flex; gap:24px;">
+    <a href="#">文档</a>
+    <a href="#">GitHub</a>
+    <a href="#">反馈</a>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelector('.cta-install').addEventListener('click', function() {
+    navigator.clipboard?.writeText('claude /figma-icons install');
+    this.style.borderColor = '#28CA41';
+    setTimeout(() => this.style.borderColor = '', 1500);
+  });
+</script>
+</body>
+</html>
