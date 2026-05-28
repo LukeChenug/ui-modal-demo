@@ -393,245 +393,98 @@
   /* ── ARCHITECTURE DIAGRAM ── */
   .arch { border-top: 1px solid var(--border); }
 
-  .arch-flow {
+  .rough-arch-wrap {
+    position: relative;
     margin-top: 56px;
-    display: flex; flex-direction: column; align-items: center;
-    gap: 0;
+    width: 100%;
   }
-
-  .arch-user-node {
-    background: rgba(224,122,95,0.08); border: 1.5px solid rgba(224,122,95,0.3);
-    border-radius: 12px; padding: 14px 28px;
-    display: flex; align-items: center; gap: 10px;
-    font-size: 14px; font-weight: 500;
+  .rough-arch-wrap canvas {
+    display: block;
+    width: 100%;
+    height: auto;
   }
-  .arch-user-node .node-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--terracotta); margin-right: 4px;
-  }
-  .arch-user-quote {
-    font-family: 'SF Mono','Fira Code',monospace; font-size: 13px;
-    color: var(--terracotta);
-  }
-
-  /* Connector arrows */
-  .arch-connector {
-    display: flex; flex-direction: column; align-items: center;
-    height: 48px; position: relative; z-index: 1;
-  }
-  .arch-connector-line {
-    width: 2px; flex: 1;
-    background: linear-gradient(to bottom, rgba(224,122,95,0.4), var(--terracotta));
-    position: relative; overflow: visible;
-  }
-  .arch-connector-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--terracotta);
-    position: absolute; left: 50%; transform: translateX(-50%);
-    animation: flowDot 1.6s ease-in-out infinite;
-  }
-  .arch-connector-head {
-    width: 0; height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 7px solid var(--terracotta);
-  }
-  @keyframes flowDot {
-    0%   { top: 0%; opacity: 0; }
-    15%  { opacity: 1; }
-    85%  { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
-
-  /* Harness main box */
-  .arch-harness-box {
-    width: 100%; max-width: 820px;
-    background: white;
-    border: 2px solid var(--terracotta);
-    border-radius: 20px;
-    box-shadow: 0 8px 48px rgba(224,122,95,0.12), 0 2px 12px rgba(0,0,0,0.06);
-    overflow: hidden;
-    position: relative;
-  }
-  .arch-harness-header {
-    background: linear-gradient(135deg, rgba(224,122,95,0.1) 0%, rgba(224,122,95,0.04) 100%);
-    border-bottom: 1.5px solid rgba(224,122,95,0.2);
-    padding: 20px 28px 16px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .arch-harness-badge {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    background: var(--terracotta); color: white;
-    padding: 4px 10px; border-radius: 20px;
-  }
-  .arch-harness-title {
-    font-size: 17px; font-weight: 700; letter-spacing: -0.02em;
-  }
-  .arch-harness-subtitle {
-    font-size: 12px; color: var(--muted); margin-left: auto;
-  }
-
-  /* 4 steps inside harness */
-  .arch-harness-steps {
-    padding: 28px;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    position: relative;
-  }
-  .arch-step-card {
-    border-radius: 14px; padding: 18px 20px;
-    border: 1.5px solid; position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .arch-step-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
-
-  .arch-step-card.step-plan   { background: rgba(126,184,247,0.07); border-color: rgba(126,184,247,0.35); }
-  .arch-step-card.step-exec   { background: rgba(40,202,65,0.06);   border-color: rgba(40,202,65,0.3); }
-  .arch-step-card.step-verify { background: rgba(255,189,46,0.07);  border-color: rgba(255,189,46,0.35); }
-  .arch-step-card.step-iter   { background: rgba(224,122,95,0.07);  border-color: rgba(224,122,95,0.3); }
-
-  .arch-step-num {
-    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-  }
-  .arch-step-num .step-circle {
-    width: 22px; height: 22px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800; color: white;
-  }
-  .step-plan   .step-circle { background: #3a7fc1; }
-  .step-exec   .step-circle { background: #1a8a2e; }
-  .step-verify .step-circle { background: #b07d00; }
-  .step-iter   .step-circle { background: var(--terracotta); }
-
-  .arch-step-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
-  .arch-step-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
-
-  /* Loop arrow from step 4 back to step 2 */
-  .arch-loop-arrow {
-    position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; align-items: center;
+  #archLabels, #wfLabels {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
   }
-  .arch-loop-svg {
-    width: 48px; height: 120px; overflow: visible;
-  }
-
-  .arch-loop-label {
-    grid-column: 1 / -1;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 10px 16px; border-radius: 10px;
-    background: rgba(224,122,95,0.06); border: 1px dashed rgba(224,122,95,0.3);
-    font-size: 12px; color: var(--muted); line-height: 1.5; text-align: center;
-  }
-  .arch-loop-label strong { color: var(--dark); }
-  .arch-loop-badge {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-    background: rgba(224,122,95,0.15); color: var(--terracotta);
-    padding: 2px 8px; border-radius: 20px; white-space: nowrap;
-  }
-
-  /* Figma bottom node */
-  .arch-figma-node {
-    background: rgba(155,89,182,0.07); border: 1.5px solid rgba(155,89,182,0.3);
-    border-radius: 12px; padding: 14px 28px;
-    display: flex; align-items: center; gap: 10px;
-    font-size: 14px; font-weight: 500;
-  }
-  .arch-figma-node .node-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-    color: #7b4fa6; margin-right: 4px;
-  }
-
-  /* Animated dashed border on harness box */
-  .arch-harness-box::after {
-    content: ''; position: absolute; inset: -2px; border-radius: 22px;
-    border: 2px dashed rgba(224,122,95,0.25);
-    animation: dashSpin 12s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes dashSpin {
-    from { clip-path: inset(0 100% 0 0); }
-    to   { clip-path: inset(0 0 0 0); }
+  .arch-caption {
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* ── WORKFLOW TIMELINE ── */
   .workflow { border-top: 1px solid var(--border); }
 
-  .wf-timeline {
-    margin-top: 56px;
-    display: flex; flex-direction: column; gap: 0;
+  .rough-wf-wrap {
     position: relative;
+    margin-top: 56px;
+    width: 100%;
   }
-  .wf-timeline::before {
-    content: ''; position: absolute; left: 27px; top: 0; bottom: 0; width: 2px;
-    background: linear-gradient(to bottom, var(--terracotta) 0%, rgba(224,122,95,0.15) 100%);
-    z-index: 0;
-  }
-
-  .wf-item {
-    display: flex; gap: 20px; align-items: flex-start;
-    padding-bottom: 20px; position: relative; z-index: 1;
-  }
-  .wf-item:last-child { padding-bottom: 0; }
-
-  .wf-icon {
-    width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0;
-    background: var(--cream); border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    box-shadow: 0 0 0 4px var(--cream);
-  }
-  .wf-item.harness-step .wf-icon {
-    border-color: var(--terracotta);
-    background: rgba(224,122,95,0.06);
-    box-shadow: 0 0 0 4px rgba(224,122,95,0.08);
+  .rough-wf-wrap canvas {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
-  .wf-card {
-    flex: 1; background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 18px 22px;
-    transition: transform 0.2s, box-shadow 0.2s;
+  /* Shared label styles for canvas overlays */
+  .canvas-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    line-height: 1.3;
+  }
+  .canvas-label .lbl-emoji {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .canvas-label .lbl-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    display: block;
+    white-space: nowrap;
+  }
+  .canvas-label .lbl-sub {
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    white-space: nowrap;
+  }
+  .canvas-label .lbl-desc {
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    max-width: 110px;
+    white-space: normal;
+    line-height: 1.4;
     margin-top: 4px;
   }
-  .wf-card:hover { transform: translateX(4px); box-shadow: 0 8px 28px rgba(0,0,0,0.06); }
-  .wf-item.harness-step .wf-card {
-    border-color: rgba(224,122,95,0.25);
-    background: rgba(224,122,95,0.03);
-    border-left: 3px solid var(--terracotta);
+  .canvas-label.lbl-harness-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--dark);
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
   }
-
-  .wf-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-  .wf-step-num {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--muted); background: var(--border);
-    padding: 2px 7px; border-radius: 20px;
-  }
-  .wf-harness-tag {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--terracotta); background: rgba(224,122,95,0.12);
-    padding: 2px 8px; border-radius: 20px;
-  }
-  .wf-card h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-  .wf-card p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 3px; }
-
-  /* Harness zone bracket */
-  .wf-harness-zone {
-    margin: 4px 0 4px 76px;
-    border: 1.5px dashed rgba(224,122,95,0.35);
-    border-radius: 16px; padding: 4px 0;
-    position: relative;
-    background: rgba(224,122,95,0.02);
-  }
-  .wf-harness-zone-label {
-    position: absolute; top: -11px; left: 16px;
-    background: var(--cream); padding: 0 8px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  .canvas-label.lbl-loop-zone {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--terracotta);
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
   }
-  .wf-harness-zone .wf-item { padding-left: 16px; padding-right: 8px; }
-  .wf-harness-zone .wf-item:last-child { padding-bottom: 8px; }
-  .wf-harness-zone .wf-item:first-child { padding-top: 12px; }
 
   /* ── TECH CAPABILITIES ── */
   .tech { border-top: 1px solid var(--border); }
@@ -679,12 +532,10 @@
 
   @media (max-width: 768px) {
     .tech-grid { grid-template-columns: 1fr; }
-    .arch-harness-steps { grid-template-columns: 1fr; }
-    .arch-harness-subtitle { display: none; }
-    .wf-harness-zone { margin-left: 0; }
   }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js"></script>
 </head>
 <body>
 
@@ -931,82 +782,14 @@
   <div class="section-inner">
     <div class="section-label reveal">系统架构</div>
     <h2 class="section-title reveal reveal-delay-1">架构总览</h2>
-    <p class="section-desc reveal reveal-delay-2">从自然语言到 Figma 画布，四层架构协同工作，每一步都有迹可循。</p>
-    <div class="arch-diagram reveal">
+    <p class="section-desc reveal reveal-delay-2">从自然语言到 Figma 画布，Harness 编排引擎驱动四步循环，保证输出质量。</p>
 
-      <!-- Layer 1: User -->
-      <div class="arch-layer arch-layer-user">
-        <div class="arch-layer-header">
-          <span class="arch-layer-badge badge-user">用户层</span>
-          <span class="arch-layer-title">User Layer — 自然语言输入</span>
-        </div>
-        <div class="arch-steps-row">
-          <div class="arch-step-chip"><span class="chip-icon">💬</span> 描述你想要的图标</div>
-          <div class="arch-step-chip"><span class="chip-icon">🎯</span> 指定风格与尺寸</div>
-          <div class="arch-step-chip"><span class="chip-icon">📦</span> 批量或单个生成</div>
-        </div>
-      </div>
-
-      <!-- Arrow 1 -->
-      <div class="arch-arrow-wrap">
-        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
-        <div class="arch-arrow-head"></div>
-      </div>
-
-      <!-- Layer 2: AI -->
-      <div class="arch-layer arch-layer-ai">
-        <div class="arch-layer-header">
-          <span class="arch-layer-badge badge-ai">AI 层</span>
-          <span class="arch-layer-title">Claude Code 智能层 — 理解与生成</span>
-        </div>
-        <div class="arch-steps-row">
-          <div class="arch-step-chip"><span class="chip-icon">🧠</span> 意图解析</div>
-          <div class="arch-step-chip"><span class="chip-icon">🎨</span> 风格匹配</div>
-          <div class="arch-step-chip"><span class="chip-icon">✏️</span> SVG 路径生成</div>
-          <div class="arch-step-chip"><span class="chip-icon">✅</span> 质量校验</div>
-        </div>
-      </div>
-
-      <!-- Arrow 2 -->
-      <div class="arch-arrow-wrap">
-        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
-        <div class="arch-arrow-head"></div>
-      </div>
-
-      <!-- Layer 3: Bridge -->
-      <div class="arch-layer arch-layer-bridge">
-        <div class="arch-layer-header">
-          <span class="arch-layer-badge badge-bridge">桥接层</span>
-          <span class="arch-layer-title">MCP 桥接层 — 协议通信</span>
-        </div>
-        <div class="arch-steps-row">
-          <div class="arch-step-chip"><span class="chip-icon">🔌</span> Figma MCP Server</div>
-          <div class="arch-step-chip"><span class="chip-icon">⚡</span> JSON-RPC 调用</div>
-          <div class="arch-step-chip"><span class="chip-icon">🔄</span> 双向数据同步</div>
-        </div>
-      </div>
-
-      <!-- Arrow 3 -->
-      <div class="arch-arrow-wrap">
-        <div class="arch-arrow-line"><div class="arch-arrow-dot"></div></div>
-        <div class="arch-arrow-head"></div>
-      </div>
-
-      <!-- Layer 4: Figma -->
-      <div class="arch-layer arch-layer-figma">
-        <div class="arch-layer-header">
-          <span class="arch-layer-badge badge-figma">执行层</span>
-          <span class="arch-layer-title">Figma 执行层 — 画布操作</span>
-        </div>
-        <div class="arch-steps-row">
-          <div class="arch-step-chip"><span class="chip-icon">🖼️</span> 创建 Frame</div>
-          <div class="arch-step-chip"><span class="chip-icon">📐</span> 插入路径</div>
-          <div class="arch-step-chip"><span class="chip-icon">⚙️</span> 设置属性</div>
-          <div class="arch-step-chip"><span class="chip-icon">🧩</span> 组件化发布</div>
-        </div>
-      </div>
-
+    <!-- Rough.js canvas diagram -->
+    <div class="rough-arch-wrap reveal reveal-delay-2" id="archWrap">
+      <canvas id="archCanvas"></canvas>
+      <div id="archLabels"></div>
     </div>
+    <p class="arch-caption">Harness 是 Claude Code 的自主循环框架——像设计师一样反复审视、迭代修正，保证输出质量</p>
   </div>
 </section>
 
@@ -1016,106 +799,10 @@
     <div class="section-label reveal">执行流程</div>
     <h2 class="section-title reveal reveal-delay-1">工作流程</h2>
     <p class="section-desc reveal reveal-delay-2">从一句话描述到可用组件，七个步骤，全程自动化。</p>
-    <div class="timeline">
 
-      <div class="tl-item reveal">
-        <div class="tl-left">
-          <div class="tl-num">📝</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 01</span>
-            <h3>描述需求</h3>
-          </div>
-          <p>用自然语言告诉 Claude 你需要什么图标，包括语义、尺寸和风格。</p>
-          <div class="tl-code"><span class="tc-str">"画一个24px的设置齿轮图标，线性风格，2px描边"</span></div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal reveal-delay-1">
-        <div class="tl-left">
-          <div class="tl-num">🧠</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 02</span>
-            <h3>意图解析</h3>
-          </div>
-          <p>Claude 理解图标语义，提取尺寸、风格、描边等结构化参数。</p>
-          <div class="tl-code"><span class="tc-key">size</span>: <span class="tc-val">24</span>, <span class="tc-key">style</span>: <span class="tc-str">"outline"</span>, <span class="tc-key">stroke</span>: <span class="tc-val">2</span></div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal reveal-delay-2">
-        <div class="tl-left">
-          <div class="tl-num">🎨</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 03</span>
-            <h3>SVG 生成</h3>
-          </div>
-          <p>基于设计规范生成标准 SVG 路径数据，确保视觉语义准确。</p>
-          <div class="tl-code"><span class="tc-key">&lt;path</span> <span class="tc-val">d</span>=<span class="tc-str">"M12 2a10 10 0..."</span> <span class="tc-key">/&gt;</span></div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal">
-        <div class="tl-left">
-          <div class="tl-num">✅</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 04</span>
-            <h3>质量校验</h3>
-          </div>
-          <p>自动检查像素对齐、描边一致性和视觉重量平衡，不合格则重新生成。</p>
-          <div class="tl-code"><span class="tc-key">pixel_align</span>: <span class="tc-str">✓</span>  <span class="tc-key">stroke_weight</span>: <span class="tc-str">✓</span>  <span class="tc-key">balance</span>: <span class="tc-str">✓</span></div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal reveal-delay-1">
-        <div class="tl-left">
-          <div class="tl-num">🔌</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 05</span>
-            <h3>MCP 调用</h3>
-          </div>
-          <p>通过 Figma MCP 协议将 SVG 数据写入画布，创建矢量节点。</p>
-          <div class="tl-code"><span class="tc-key">figma.createVector</span>(<span class="tc-val">paths</span>, <span class="tc-val">props</span>)</div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal reveal-delay-2">
-        <div class="tl-left">
-          <div class="tl-num">📐</div>
-        </div>
-        <div class="tl-card">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 06</span>
-            <h3>自动整理</h3>
-          </div>
-          <p>按命名规范归类到对应 Frame，统一间距，保持文件整洁有序。</p>
-          <div class="tl-code"><span class="tc-str">Icons/System/settings/outline</span></div>
-        </div>
-      </div>
-
-      <div class="tl-item reveal" style="grid-column: 1 / -1;">
-        <div class="tl-left">
-          <div class="tl-num">🚀</div>
-        </div>
-        <div class="tl-card" style="max-width: 480px;">
-          <div class="tl-card-header">
-            <span class="tl-step-badge">Step 07</span>
-            <h3>同步发布</h3>
-          </div>
-          <p>更新 Figma 组件库，导出多格式资源，推送 SVG 到代码仓库，生成 Design Token。</p>
-          <div class="tl-code"><span class="tc-key">publish</span> → <span class="tc-str">component_lib</span>  <span class="tc-key">export</span> → <span class="tc-str">git push</span></div>
-        </div>
-      </div>
-
+    <div class="rough-wf-wrap reveal reveal-delay-2" id="wfWrap">
+      <canvas id="wfCanvas"></canvas>
+      <div id="wfLabels"></div>
     </div>
   </div>
 </section>
@@ -1261,17 +948,354 @@
 </footer>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
+  // ── Scroll reveal ──
+  const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
   document.querySelector('.cta-install').addEventListener('click', function() {
     navigator.clipboard?.writeText('claude /figma-icons install');
     this.style.borderColor = '#28CA41';
     setTimeout(() => this.style.borderColor = '', 1500);
+  });
+
+  // ── Rough.js helpers ──
+  const DARK = '#1a1a1a';
+  const TERRA = '#E07A5F';
+  const TERRA_FILL = 'rgba(224,122,95,0.08)';
+  const BLUE_FILL  = 'rgba(126,184,247,0.10)';
+  const GREEN_FILL = 'rgba(40,202,65,0.08)';
+  const GOLD_FILL  = 'rgba(255,189,46,0.10)';
+  const CREAM_FILL = 'rgba(250,249,246,0.9)';
+
+  function ro(roughCanvas, opts) {
+    return Object.assign({ roughness: 1.6, bowing: 1, stroke: DARK, strokeWidth: 1.8 }, opts);
+  }
+
+  function drawArrowDown(rc, x, y1, y2, color) {
+    color = color || DARK;
+    rc.line(x, y1, x, y2 - 10, ro(rc, { stroke: color, strokeWidth: 2 }));
+    rc.linearPath([
+      [x - 7, y2 - 12], [x, y2], [x + 7, y2 - 12]
+    ], ro(rc, { stroke: color, strokeWidth: 2, roughness: 1 }));
+  }
+
+  function drawArrowRight(rc, x1, x2, y, color) {
+    color = color || DARK;
+    rc.line(x1, y, x2 - 10, y, ro(rc, { stroke: color, strokeWidth: 2 }));
+    rc.linearPath([
+      [x2 - 12, y - 7], [x2, y], [x2 - 12, y + 7]
+    ], ro(rc, { stroke: color, strokeWidth: 2, roughness: 1 }));
+  }
+
+  function makeLabel(container, x, y, html, extraClass) {
+    const d = document.createElement('div');
+    d.className = 'canvas-label' + (extraClass ? ' ' + extraClass : '');
+    d.style.left = (x * 100) + '%';
+    d.style.top  = (y * 100) + '%';
+    d.innerHTML = html;
+    container.appendChild(d);
+  }
+
+  // ── Architecture diagram ──
+  function drawArch() {
+    const wrap = document.getElementById('archWrap');
+    const canvas = document.getElementById('archCanvas');
+    const labels = document.getElementById('archLabels');
+    labels.innerHTML = '';
+
+    const isMobile = window.innerWidth < 640;
+    const W = wrap.clientWidth;
+    const H = isMobile ? 700 : 580;
+    canvas.width  = W * window.devicePixelRatio;
+    canvas.height = H * window.devicePixelRatio;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    const rc = rough.canvas(canvas);
+
+    const cx = W / 2;
+
+    // ── Top node: 用户输入 ──
+    const topW = isMobile ? W * 0.7 : 280;
+    const topH = 56;
+    const topX = cx - topW / 2;
+    const topY = 24;
+    rc.rectangle(topX, topY, topW, topH, ro(rc, {
+      fill: TERRA_FILL, fillStyle: 'solid', stroke: TERRA, strokeWidth: 2, roughness: 1.4
+    }));
+    makeLabel(labels, 0.5, (topY + topH / 2) / H,
+      '<span class="lbl-title">用户输入</span><span class="lbl-sub">画一个齿轮图标，线性，24px</span>');
+
+    // Arrow down to harness
+    drawArrowDown(rc, cx, topY + topH, topY + topH + 44, TERRA);
+
+    // ── Harness outer box ──
+    const harnessY = topY + topH + 44;
+    const harnessW = isMobile ? W - 32 : Math.min(W - 80, 720);
+    const harnessH = isMobile ? 340 : 300;
+    const harnessX = cx - harnessW / 2;
+
+    // Double border effect
+    rc.rectangle(harnessX + 4, harnessY + 4, harnessW - 8, harnessH - 8, ro(rc, {
+      fill: 'rgba(224,122,95,0.04)', fillStyle: 'solid',
+      stroke: TERRA, strokeWidth: 1, roughness: 1.2, strokeLineDash: [6, 4]
+    }));
+    rc.rectangle(harnessX, harnessY, harnessW, harnessH, ro(rc, {
+      fill: 'none', stroke: TERRA, strokeWidth: 2.5, roughness: 1.5
+    }));
+
+    // Harness title label (top of box)
+    makeLabel(labels, 0.5, (harnessY + 22) / H,
+      '<span style="font-size:13px;font-weight:700;color:#1a1a1a;white-space:nowrap;">Claude Code Harness 编排引擎</span>');
+
+    // ── 4 inner nodes in diamond layout ──
+    const innerCx = cx;
+    const innerCy = harnessY + harnessH / 2 + 10;
+    const rx = isMobile ? harnessW * 0.3 : harnessW * 0.28;
+    const ry = isMobile ? 90 : 80;
+
+    const nodes = [
+      { angle: -90, label: '① 规划 Plan',    fill: BLUE_FILL,  stroke: '#3a7fc1' },
+      { angle:   0, label: '② 执行 Execute',  fill: GREEN_FILL, stroke: '#1a8a2e' },
+      { angle:  90, label: '③ 校验 Verify',   fill: GOLD_FILL,  stroke: '#b07d00' },
+      { angle: 180, label: '④ 修正 Iterate',  fill: TERRA_FILL, stroke: TERRA     },
+    ];
+
+    const nodeW = isMobile ? 90 : 110;
+    const nodeH = 38;
+    const nodePositions = nodes.map(n => {
+      const rad = n.angle * Math.PI / 180;
+      return {
+        x: innerCx + rx * Math.cos(rad),
+        y: innerCy + ry * Math.sin(rad),
+        ...n
+      };
+    });
+
+    nodePositions.forEach(n => {
+      rc.rectangle(n.x - nodeW / 2, n.y - nodeH / 2, nodeW, nodeH, ro(rc, {
+        fill: n.fill, fillStyle: 'solid', stroke: n.stroke, strokeWidth: 2, roughness: 1.3
+      }));
+      makeLabel(labels, n.x / W, n.y / H,
+        '<span class="lbl-title" style="font-size:12px;">' + n.label + '</span>');
+    });
+
+    // Clockwise arrows between nodes (0→1→2→3)
+    const arrowPairs = [[0,1],[1,2],[2,3]];
+    arrowPairs.forEach(([a, b]) => {
+      const na = nodePositions[a], nb = nodePositions[b];
+      const mx = (na.x + nb.x) / 2, my = (na.y + nb.y) / 2;
+      const dx = nb.x - na.x, dy = nb.y - na.y;
+      const len = Math.sqrt(dx*dx + dy*dy);
+      const ux = dx/len, uy = dy/len;
+      const gap = nodeW / 2 + 4;
+      const sx = na.x + ux * gap, sy = na.y + uy * gap;
+      const ex = nb.x - ux * gap, ey = nb.y - uy * gap;
+      rc.line(sx, sy, ex - ux*10, ey - uy*10, ro(rc, { stroke: DARK, strokeWidth: 1.8 }));
+      rc.linearPath([
+        [ex - ux*12 - uy*6, ey - uy*12 + ux*6],
+        [ex, ey],
+        [ex - ux*12 + uy*6, ey - uy*12 - ux*6]
+      ], ro(rc, { stroke: DARK, strokeWidth: 1.8, roughness: 1 }));
+    });
+
+    // Retry loop: node 3 (Iterate) back to node 1 (Execute) — terracotta curved path
+    const n3 = nodePositions[3], n1 = nodePositions[1];
+    // Draw as a path going left and up
+    const loopPts = [
+      [n3.x - nodeW/2, n3.y],
+      [harnessX + 20, n3.y],
+      [harnessX + 20, n1.y],
+      [n1.x - nodeW/2 + 8, n1.y]
+    ];
+    rc.linearPath(loopPts, ro(rc, { stroke: TERRA, strokeWidth: 2.5, roughness: 1.8 }));
+    // arrowhead at end
+    rc.linearPath([
+      [n1.x - nodeW/2 + 10, n1.y - 7],
+      [n1.x - nodeW/2, n1.y],
+      [n1.x - nodeW/2 + 10, n1.y + 7]
+    ], ro(rc, { stroke: TERRA, strokeWidth: 2, roughness: 1 }));
+    // loop label
+    makeLabel(labels, (harnessX + 20) / W, ((n3.y + n1.y) / 2) / H,
+      '<span style="font-size:10px;font-weight:700;color:' + TERRA + ';writing-mode:vertical-rl;letter-spacing:0.05em;">重试循环</span>');
+
+    // Arrow down from harness
+    const belowHarness = harnessY + harnessH;
+    drawArrowDown(rc, cx, belowHarness, belowHarness + 44, TERRA);
+
+    // ── Bottom node: Figma ──
+    const botW = isMobile ? W * 0.75 : 300;
+    const botH = 56;
+    const botX = cx - botW / 2;
+    const botY = belowHarness + 44;
+    rc.rectangle(botX, botY, botW, botH, ro(rc, {
+      fill: 'rgba(155,89,182,0.08)', fillStyle: 'solid',
+      stroke: '#9b59b6', strokeWidth: 2, roughness: 1.4
+    }));
+    makeLabel(labels, 0.5, (botY + botH / 2) / H,
+      '<span class="lbl-title">Figma MCP → 图标写入画布</span>');
+  }
+
+  // ── Workflow diagram ──
+  function drawWorkflow() {
+    const wrap = document.getElementById('wfWrap');
+    const canvas = document.getElementById('wfCanvas');
+    const labels = document.getElementById('wfLabels');
+    labels.innerHTML = '';
+
+    const isMobile = window.innerWidth < 700;
+    const W = wrap.clientWidth;
+
+    const steps = [
+      { emoji: '📝', title: '描述需求',   desc: '用自然语言告诉\nClaude 你要什么图标' },
+      { emoji: '🧠', title: 'Plan',        desc: '拆解任务，确定\n风格、尺寸、设计规范', harness: true },
+      { emoji: '🎨', title: 'Execute',     desc: '生成符合规范的\nSVG 路径数据',         harness: true },
+      { emoji: '✅', title: 'Verify',      desc: '质量校验，不通过\n则回到 Step 3',       harness: true },
+      { emoji: '🔌', title: 'MCP 写入',   desc: '通过 Figma MCP\n协议写入画布' },
+      { emoji: '📐', title: '自动整理',   desc: '命名规范、Frame\n归类、间距统一' },
+      { emoji: '🚀', title: '同步发布',   desc: '更新组件库，导出\n资源，推送代码' },
+    ];
+
+    const nodeW = isMobile ? 72 : 100;
+    const nodeH = isMobile ? 60 : 72;
+    const H = isMobile ? steps.length * 120 + 60 : 380;
+
+    canvas.width  = W * window.devicePixelRatio;
+    canvas.height = H * window.devicePixelRatio;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    const rc = rough.canvas(canvas);
+
+    let positions;
+    if (isMobile) {
+      const cx = W / 2;
+      const startY = 50;
+      const stepY = 110;
+      positions = steps.map((s, i) => ({ x: cx, y: startY + i * stepY, ...s }));
+    } else {
+      const totalW = W - 80;
+      const gap = totalW / (steps.length - 1);
+      const cy = H / 2;
+      positions = steps.map((s, i) => ({ x: 40 + i * gap, y: cy, ...s }));
+    }
+
+    // ── Harness loop zone box (steps 1-3) ──
+    const hSteps = positions.filter(p => p.harness);
+    if (hSteps.length) {
+      const pad = 20;
+      let zx, zy, zw, zh;
+      if (isMobile) {
+        zx = hSteps[0].x - nodeW / 2 - pad;
+        zy = hSteps[0].y - nodeH / 2 - pad;
+        zw = nodeW + pad * 2;
+        zh = (hSteps[hSteps.length-1].y - hSteps[0].y) + nodeH + pad * 2;
+      } else {
+        zx = hSteps[0].x - nodeW / 2 - pad;
+        zy = hSteps[0].y - nodeH / 2 - pad - 10;
+        zw = (hSteps[hSteps.length-1].x - hSteps[0].x) + nodeW + pad * 2;
+        zh = nodeH + pad * 2 + 20;
+      }
+      rc.rectangle(zx, zy, zw, zh, ro(rc, {
+        fill: 'rgba(224,122,95,0.05)', fillStyle: 'solid',
+        stroke: TERRA, strokeWidth: 2, roughness: 1.8,
+        strokeLineDash: [8, 5]
+      }));
+      // Zone label
+      makeLabel(labels, (zx + zw / 2) / W, zy / H,
+        '<span class="lbl-loop-zone">Harness 循环区</span>');
+
+      // Loop-back arrow from Verify back to Execute
+      const verifyP = positions[3], execP = positions[2];
+      if (isMobile) {
+        const loopX = verifyP.x + nodeW / 2 + 12;
+        rc.linearPath([
+          [verifyP.x + nodeW/2, verifyP.y],
+          [loopX, verifyP.y],
+          [loopX, execP.y],
+          [execP.x + nodeW/2 + 4, execP.y]
+        ], ro(rc, { stroke: TERRA, strokeWidth: 2.2, roughness: 1.8 }));
+        rc.linearPath([
+          [execP.x + nodeW/2 + 6, execP.y - 6],
+          [execP.x + nodeW/2, execP.y],
+          [execP.x + nodeW/2 + 6, execP.y + 6]
+        ], ro(rc, { stroke: TERRA, strokeWidth: 2, roughness: 1 }));
+      } else {
+        const loopY = zy - 16;
+        rc.linearPath([
+          [verifyP.x, verifyP.y - nodeH/2],
+          [verifyP.x, loopY],
+          [execP.x, loopY],
+          [execP.x, execP.y - nodeH/2 - 4]
+        ], ro(rc, { stroke: TERRA, strokeWidth: 2.2, roughness: 1.8 }));
+        rc.linearPath([
+          [execP.x - 7, execP.y - nodeH/2 + 2],
+          [execP.x, execP.y - nodeH/2],
+          [execP.x + 7, execP.y - nodeH/2 + 2]
+        ], ro(rc, { stroke: TERRA, strokeWidth: 2, roughness: 1 }));
+        makeLabel(labels, ((verifyP.x + execP.x) / 2) / W, (loopY) / H,
+          '<span style="font-size:10px;font-weight:700;color:' + TERRA + ';">↺ 重试</span>');
+      }
+    }
+
+    // ── Connecting arrows between nodes ──
+    for (let i = 0; i < positions.length - 1; i++) {
+      const a = positions[i], b = positions[i + 1];
+      if (isMobile) {
+        drawArrowDown(rc, a.x, a.y + nodeH / 2, b.y - nodeH / 2, DARK);
+      } else {
+        drawArrowRight(rc, a.x + nodeW / 2, b.x - nodeW / 2, a.y, DARK);
+      }
+    }
+
+    // ── Node boxes ──
+    positions.forEach((p, i) => {
+      const fill = p.harness ? TERRA_FILL : CREAM_FILL;
+      const stroke = p.harness ? TERRA : DARK;
+      rc.rectangle(p.x - nodeW/2, p.y - nodeH/2, nodeW, nodeH, ro(rc, {
+        fill, fillStyle: 'solid', stroke, strokeWidth: p.harness ? 2.2 : 1.8, roughness: 1.5
+      }));
+      makeLabel(labels, p.x / W, p.y / H,
+        '<span class="lbl-emoji">' + p.emoji + '</span>' +
+        '<span class="lbl-title">' + p.title + '</span>');
+
+      // Description below node
+      const descY = isMobile ? p.y + nodeH / 2 + 18 : p.y + nodeH / 2 + 14;
+      makeLabel(labels, p.x / W, descY / H,
+        '<span class="lbl-desc">' + p.desc.replace('\n', '<br>') + '</span>');
+    });
+  }
+
+  // ── IntersectionObserver to trigger draw on scroll ──
+  let archDrawn = false, wfDrawn = false;
+
+  const drawObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      if (e.target.id === 'archWrap' && !archDrawn) { archDrawn = true; drawArch(); }
+      if (e.target.id === 'wfWrap'   && !wfDrawn)   { wfDrawn   = true; drawWorkflow(); }
+    });
+  }, { threshold: 0.15 });
+
+  document.getElementById('archWrap') && drawObs.observe(document.getElementById('archWrap'));
+  document.getElementById('wfWrap')   && drawObs.observe(document.getElementById('wfWrap'));
+
+  // ── Redraw on resize ──
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (archDrawn) drawArch();
+      if (wfDrawn)   drawWorkflow();
+    }, 150);
   });
 </script>
 </body>
