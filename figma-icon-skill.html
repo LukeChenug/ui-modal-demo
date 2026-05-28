@@ -408,6 +408,7 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none;
+    z-index: 2;
   }
   .arch-caption {
     margin-top: 24px;
@@ -453,6 +454,7 @@
     color: var(--dark);
     display: block;
     white-space: nowrap;
+    background: transparent;
   }
   .canvas-label .lbl-sub {
     font-size: 11px;
@@ -1041,13 +1043,13 @@
     const harnessH = isMobile ? 340 : 300;
     const harnessX = cx - harnessW / 2;
 
-    // Double border effect
+    // Double border effect — stroke only, no fill (solid transparent so hachure never fires)
     rc.rectangle(harnessX + 4, harnessY + 4, harnessW - 8, harnessH - 8, ro(rc, {
-      fill: 'rgba(224,122,95,0.04)', fillStyle: 'solid',
+      fill: 'rgba(224,122,95,0.03)', fillStyle: 'solid',
       stroke: TERRA, strokeWidth: 1, roughness: 1.2, strokeLineDash: [6, 4]
     }));
     rc.rectangle(harnessX, harnessY, harnessW, harnessH, ro(rc, {
-      fill: 'none', stroke: TERRA, strokeWidth: 2.5, roughness: 1.5
+      fill: 'rgba(224,122,95,0.03)', fillStyle: 'solid', stroke: TERRA, strokeWidth: 2.5, roughness: 1.5
     }));
 
     // Harness title label (top of box)
@@ -1061,10 +1063,10 @@
     const ry = isMobile ? 90 : 80;
 
     const nodes = [
-      { angle: -90, label: '① 规划 Plan',    fill: BLUE_FILL,  stroke: '#3a7fc1' },
-      { angle:   0, label: '② 执行 Execute',  fill: GREEN_FILL, stroke: '#1a8a2e' },
-      { angle:  90, label: '③ 校验 Verify',   fill: GOLD_FILL,  stroke: '#b07d00' },
-      { angle: 180, label: '④ 修正 Iterate',  fill: TERRA_FILL, stroke: TERRA     },
+      { angle: -90, label: '① 规划 Plan',   fill: '#EEF5FD', stroke: '#3a7fc1' },
+      { angle:   0, label: '② 执行 Execute', fill: '#EDF8EF', stroke: '#1a8a2e' },
+      { angle:  90, label: '③ 校验 Verify',  fill: '#FDF8E8', stroke: '#b07d00' },
+      { angle: 180, label: '④ 修正 Iterate', fill: '#FDF0EC', stroke: TERRA     },
     ];
 
     const nodeW = isMobile ? 90 : 110;
@@ -1078,6 +1080,7 @@
       };
     });
 
+    // Draw nodes with solid opaque fill so text overlays are never obscured
     nodePositions.forEach(n => {
       rc.rectangle(n.x - nodeW / 2, n.y - nodeH / 2, nodeW, nodeH, ro(rc, {
         fill: n.fill, fillStyle: 'solid', stroke: n.stroke, strokeWidth: 2, roughness: 1.3
@@ -1105,25 +1108,25 @@
       ], ro(rc, { stroke: DARK, strokeWidth: 1.8, roughness: 1 }));
     });
 
-    // Retry loop: node 3 (Iterate) back to node 1 (Execute) — terracotta curved path
+    // Retry loop: ④ Iterate (left) back to ② Execute (right) — terracotta path along bottom of harness
     const n3 = nodePositions[3], n1 = nodePositions[1];
-    // Draw as a path going left and up
+    const loopY = harnessY + harnessH - 18;
     const loopPts = [
-      [n3.x - nodeW/2, n3.y],
-      [harnessX + 20, n3.y],
-      [harnessX + 20, n1.y],
-      [n1.x - nodeW/2 + 8, n1.y]
+      [n3.x, n3.y + nodeH / 2],
+      [n3.x, loopY],
+      [n1.x, loopY],
+      [n1.x, n1.y + nodeH / 2 + 4]
     ];
     rc.linearPath(loopPts, ro(rc, { stroke: TERRA, strokeWidth: 2.5, roughness: 1.8 }));
-    // arrowhead at end
+    // arrowhead pointing up into ② Execute
     rc.linearPath([
-      [n1.x - nodeW/2 + 10, n1.y - 7],
-      [n1.x - nodeW/2, n1.y],
-      [n1.x - nodeW/2 + 10, n1.y + 7]
+      [n1.x - 7, n1.y + nodeH / 2 + 6],
+      [n1.x, n1.y + nodeH / 2],
+      [n1.x + 7, n1.y + nodeH / 2 + 6]
     ], ro(rc, { stroke: TERRA, strokeWidth: 2, roughness: 1 }));
-    // loop label
-    makeLabel(labels, (harnessX + 20) / W, ((n3.y + n1.y) / 2) / H,
-      '<span style="font-size:10px;font-weight:700;color:' + TERRA + ';writing-mode:vertical-rl;letter-spacing:0.05em;">重试循环</span>');
+    // loop label centred on the bottom path
+    makeLabel(labels, ((n3.x + n1.x) / 2) / W, loopY / H,
+      '<span style="font-size:10px;font-weight:700;color:' + TERRA + ';background:rgba(250,249,246,0.9);padding:0 4px;border-radius:3px;">↺ 重试循环</span>');
 
     // Arrow down from harness
     const belowHarness = harnessY + harnessH;
