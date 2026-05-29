@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compile — An event by Cursor</title>
+<style>
+  :root{
+    --bg:#ECEAE5;
+    --ink:#1A1A1A;
+    --gray:#777;
+    --rule:#D8D5CE;
+    --field:#F4F2EE;
+    --maxw:1200px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+  .container{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 40px;
+  }
+  a{color:inherit;}
+  .gray{color:var(--gray);}
+  .rule{border:0;border-top:1px solid var(--rule);margin:0;}
+
+  /* HERO */
+  .hero{
+    padding-top:56px;
+  }
+  .hero-canvas-wrap{
+    width:100%;
+  }
+  #hero-canvas{
+    display:block;
+    width:100%;
+    height:260px;
+  }
+  .caption-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-top:18px;
+    font-size:15px;
+    letter-spacing:0.01em;
+  }
+  .caption-row .left{color:var(--ink);}
+  .caption-row .right{color:var(--gray);}
+
+  .gap-xl{height:120px;}
+  .gap-l{height:72px;}
+
+  /* Section heading */
+  .section{padding:64px 0;}
+  .section h2{
+    font-size:30px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 40px 0;
+  }
+
+  /* INTRO BAND */
+  .intro{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:48px;
+    padding:64px 0;
+  }
+  .intro .col1{
+    font-size:23px;
+    line-height:1.35;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  .intro .col2{
+    font-size:18px;
+    color:var(--gray);
+    line-height:1.5;
+  }
+  .intro .col3 .lead{font-size:18px;color:var(--ink);margin:0 0 6px 0;}
+  .intro .col3 .sub{font-size:18px;color:var(--gray);margin:0 0 22px 0;}
+
+  /* Buttons */
+  .btn{
+    display:block;
+    width:100%;
+    background:var(--ink);
+    color:#fff;
+    text-align:center;
+    border:none;
+    padding:16px 24px;
+    font-size:16px;
+    font-weight:500;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    border-radius:0;
+    text-decoration:none;
+    font-family:inherit;
+    transition:opacity .15s ease;
+  }
+  .btn:hover{opacity:0.85;}
+  .btn-inline{width:auto;display:inline-block;padding:14px 30px;margin-top:28px;}
+
+  /* SPEAKERS */
+  .speakers-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:40px 32px;
+  }
+  .speaker .name{font-size:19px;color:var(--ink);}
+  .speaker .org{font-size:16px;color:var(--gray);margin-top:2px;}
+
+  /* CALL FOR PAPERS */
+  .cfp{max-width:760px;}
+  .cfp p{font-size:19px;line-height:1.5;margin:0 0 20px 0;}
+  .cfp p.muted{color:var(--gray);}
+  .cfp .topics-label{font-size:18px;color:var(--ink);margin-bottom:8px;}
+  .cfp ul{
+    margin:0 0 24px 0;
+    padding-left:22px;
+    color:var(--gray);
+    font-size:18px;
+    line-height:1.7;
+  }
+  .cfp .inspo{color:var(--gray);font-size:18px;}
+
+  /* FAQ */
+  .faq-list{border-top:1px solid var(--rule);}
+  .faq-item{
+    border-bottom:1px solid var(--rule);
+  }
+  .faq-item summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:24px;
+    padding:24px 0;
+    font-size:20px;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item .plus{
+    color:var(--gray);
+    font-size:24px;
+    line-height:1;
+    flex-shrink:0;
+    transition:transform .2s ease;
+  }
+  .faq-item[open] .plus{transform:rotate(45deg);}
+  .faq-item .answer{
+    font-size:18px;
+    color:var(--gray);
+    line-height:1.55;
+    padding:0 60px 28px 0;
+    max-width:760px;
+  }
+
+  /* WAITLIST */
+  .waitlist{max-width:760px;}
+  .waitlist .sub{font-size:18px;color:var(--gray);margin:0 0 40px 0;}
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px 28px;
+  }
+  .field{display:flex;flex-direction:column;}
+  .field.full{grid-column:1 / -1;}
+  .field label{
+    font-size:14px;
+    color:var(--gray);
+    margin-bottom:8px;
+    letter-spacing:0.01em;
+  }
+  .field input{
+    background:var(--field);
+    border:1px solid var(--rule);
+    padding:14px 14px;
+    font-size:16px;
+    font-family:inherit;
+    color:var(--ink);
+    border-radius:0;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  .field input:focus{border-color:var(--ink);}
+  .fineprint{
+    font-size:13px;
+    color:var(--gray);
+    line-height:1.5;
+    margin:28px 0 24px 0;
+  }
+
+  /* FOOTER */
+  footer{padding:48px 0 80px 0;}
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:15px;
+  }
+  .footer-row .left{color:var(--ink);}
+  .footer-row .right{color:var(--gray);}
+
+  /* RESPONSIVE */
+  @media (max-width:860px){
+    .container{padding:0 24px;}
+    .intro{grid-template-columns:1fr;gap:36px;}
+    .speakers-grid{grid-template-columns:repeat(2,1fr);}
+    .form-grid{grid-template-columns:1fr;}
+    #hero-canvas{height:180px;}
+    .gap-xl{height:72px;}
+    .section h2{font-size:25px;}
+    .intro .col1{font-size:20px;}
+  }
+  @media (max-width:480px){
+    #hero-canvas{height:140px;}
+    .speakers-grid{grid-template-columns:1fr;}
+    .caption-row{font-size:13px;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-canvas-wrap">
+        <canvas id="hero-canvas" aria-label="Animated Lissajous curves spelling COMPILE"></canvas>
+      </div>
+      <div class="caption-row">
+        <span class="left">An event by Cursor</span>
+        <span class="right">June 16 at Fort Mason</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="gap-xl"></div>
+
+  <!-- INTRO BAND -->
+  <div class="container">
+    <hr class="rule">
+    <div class="intro">
+      <div class="col1">Compile is a one-day, invite-only gathering hosted by Cursor at Fort Mason in San Francisco.</div>
+      <div class="col2">Compile brings together engineers, researchers, designers, and builders of all kinds to explore the future of software.</div>
+      <div class="col3">
+        <p class="lead">Compile is invite-only.</p>
+        <p class="sub">If you've received an invitation, please RSVP below.</p>
+        <a href="#waitlist" class="btn">RSVP</a>
+      </div>
+    </div>
+    <hr class="rule">
+  </div>
+
+  <!-- SPEAKERS -->
+  <section class="section">
+    <div class="container">
+      <h2>Speakers</h2>
+      <div class="speakers-grid">
+        <div class="speaker"><div class="name">Michael Truell</div><div class="org">Cursor</div></div>
+        <div class="speaker"><div class="name">Dan Shipper</div><div class="org">Every</div></div>
+        <div class="speaker"><div class="name">Pieter Levels</div><div class="org">Independent</div></div>
+        <div class="speaker"><div class="name">Claire Vo</div><div class="org">ChatPRD</div></div>
+        <div class="speaker"><div class="name">Sam Lambert</div><div class="org">PlanetScale</div></div>
+        <div class="speaker"><div class="name">Ryo Lu</div><div class="org">Cursor</div></div>
+        <div class="speaker"><div class="name">Farhan Thawar</div><div class="org">Shopify</div></div>
+        <div class="speaker"><div class="name">Cheng Lou</div><div class="org">Midjourney</div></div>
+        <div class="speaker"><div class="name">Linus Lee</div><div class="org">Thrive Capital</div></div>
+        <div class="speaker"><div class="name">And more…</div><div class="org">To be announced</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="rule"></div>
+
+  <!-- CALL FOR PAPERS -->
+  <section class="section">
+    <div class="container">
+      <h2>Call for Papers</h2>
+      <div class="cfp">
+        <p>At Compile, we want to hear from you! We're taking open submissions for our Chalkboard Stage.</p>
+        <p class="muted">If chosen, you'll step up with nothing but a board and a piece of chalk to work through your idea live, from the ground up.</p>
+        <div class="topics-label">Example types of topics:</div>
+        <ul>
+          <li>Rethinking a core system from scratch</li>
+          <li>A hard-won lesson from something you built</li>
+          <li>New mental models for AI-native development</li>
+          <li>Explaining a complex concept simply</li>
+        </ul>
+        <p class="inspo">For further inspiration, check out Kurt Vonnegut's iconic chalkboard lecture on the Shapes of Stories.</p>
+        <a href="#" class="btn btn-inline">Apply to speak</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="rule"></div>
+
+  <!-- FAQs -->
+  <section class="section">
+    <div class="container">
+      <h2>FAQs</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Can I bring my team? Can I transfer my invite?<span class="plus">+</span></summary>
+          <div class="answer">Compile is invite-only, but if you want to recommend another attendee or send someone else from your team, reply to your invitation or email compile@cursor.com.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Who is Compile designed for?<span class="plus">+</span></summary>
+          <div class="answer">Engineers, researchers, and builders who want to think seriously about software: how it is made, how it changes, and what we can build next.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Will the event be accessible to my needs?<span class="plus">+</span></summary>
+          <div class="answer">The event will be ADA accessible, with food options to accommodate all allergens. Please share any specific needs with our team in your registration.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What is the schedule?<span class="plus">+</span></summary>
+          <div class="answer">We will share the agenda closer to the event.</div>
+        </details>
+        <details class="faq-item">
+          <summary>I have more questions.<span class="plus">+</span></summary>
+          <div class="answer">Reach out to our team at compile@cursor.com.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="rule"></div>
+
+  <!-- WAITLIST -->
+  <section class="section" id="waitlist">
+    <div class="container">
+      <h2>Join the waitlist.</h2>
+      <div class="waitlist">
+        <p class="sub">Share your details and we'll follow up if space opens up.</p>
+        <form onsubmit="return false;">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fn">First name*</label>
+              <input id="fn" type="text" name="firstname" required>
+            </div>
+            <div class="field">
+              <label for="ln">Last name*</label>
+              <input id="ln" type="text" name="lastname" required>
+            </div>
+            <div class="field">
+              <label for="em">Email*</label>
+              <input id="em" type="email" name="email" required>
+            </div>
+            <div class="field">
+              <label for="co">Company*</label>
+              <input id="co" type="text" name="company" required>
+            </div>
+            <div class="field full">
+              <label for="ws">Website</label>
+              <input id="ws" type="url" name="website">
+            </div>
+          </div>
+          <p class="fineprint">By registering, I consent to my personal information being shared with event partners for event operations and fulfillment purposes.</p>
+          <button type="submit" class="btn btn-inline">Join waitlist</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <hr class="rule" style="margin-bottom:32px;">
+      <div class="footer-row">
+        <span class="left">An event by Cursor</span>
+        <span class="right">June 16 at Fort Mason</span>
+      </div>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('hero-canvas');
+  var ctx = canvas.getContext('2d');
+
+  // One Lissajous glyph per letter of COMPILE.
+  var glyphs = [
+    { color:'#E8632A', a:3, b:2, speed:0.0100 }, // C
+    { color:'#4F9D69', a:2, b:2, speed:0.0065 }, // O (near-circle)
+    { color:'#B8A23E', a:3, b:4, speed:0.0130 }, // M
+    { color:'#8E8FD6', a:4, b:3, speed:0.0088 }, // P
+    { color:'#1A1A1A', a:1, b:1, speed:0.0055 }, // I (simplest)
+    { color:'#6B4A2F', a:2, b:3, speed:0.0115 }, // L
+    { color:'#3B6FC4', a:4, b:5, speed:0.0078 }  // E
+  ];
+  // Give each its own starting phase so they're out of sync.
+  for (var i=0; i<glyphs.length; i++){ glyphs[i].delta = i * 0.8; }
+
+  var W = 0, H = 0, dpr = 1;
+  var SAMPLES = 600;
+  var TWO_PI = Math.PI * 2;
+
+  function resize(){
+    dpr = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    W = rect.width;
+    H = rect.height;
+    canvas.width  = Math.max(1, Math.round(W * dpr));
+    canvas.height = Math.max(1, Math.round(H * dpr));
+    // Work in CSS pixels; the transform handles crispness for retina.
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+
+    var cellW = W / 7;
+    var padX = cellW * 0.20;
+    var padY = H * 0.16;
+    var A = (cellW / 2) - padX;   // x amplitude, fits within cell
+    var B = (H / 2) - padY;       // y amplitude, fits within canvas height
+    if (A < 4) A = 4;
+    if (B < 4) B = 4;
+
+    ctx.lineWidth = 2;            // 2px in CSS pixels -> crisp on retina
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    for (var g = 0; g < 7; g++){
+      var gl = glyphs[g];
+      var cx = cellW * g + cellW / 2;
+      var cy = H / 2;
+
+      ctx.beginPath();
+      ctx.strokeStyle = gl.color;
+
+      for (var k = 0; k <= SAMPLES; k++){
+        var t = (k / SAMPLES) * TWO_PI;
+        var x = cx + A * Math.sin(gl.a * t + gl.delta);
+        var y = cy + B * Math.sin(gl.b * t);
+        if (k === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      gl.delta += gl.speed;       // animate the phase -> morphing/rotating
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
