@@ -1,250 +1,596 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="zh-CN" data-accent="safety-orange">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claude Opus 4.8 深度解读</title>
+  <meta charset="utf-8">
+  <title>Claude Opus 4.8 发了 · 设计师视角深度解读</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #1a1a1a;
-      padding: 16px;
-      font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif;
+    /* === Accent: Safety Orange override === */
+    :root,
+    [data-accent="safety-orange"] {
+      --paper: #fafaf8;
+      --ink: #0a0a0a;
+      --grey-1: #f0f0ee;
+      --grey-2: #d4d4d2;
+      --grey-3: #737373;
+      --accent: #E07A5F;
+      --accent-on: #ffffff;
     }
-    .card {
-      width: 100%;
-      max-width: 540px;
-      margin: 0 auto 20px;
-      background: #FAFAF8;
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
+    /* === Typography stack === */
+    :root {
+      --sans:    "Inter","Helvetica Neue",Helvetica,"Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei UI",sans-serif;
+      --sans-zh: "Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei UI","Inter",sans-serif;
+      --mono:    "IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
     }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: #E07A5F;
+    /* === Spacing tokens === */
+    :root {
+      --sp-3:8px; --sp-4:12px; --sp-5:16px; --sp-6:24px; --sp-7:32px;
+      --sp-8:40px; --sp-9:48px; --sp-10:64px; --sp-11:80px; --sp-12:96px; --sp-13:160px;
     }
-    .card-inner { padding: 32px 28px 28px; }
-    .section-num {
-      font-size: 11px; font-weight: 700; color: #E07A5F;
-      letter-spacing: 0.2em; margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: 24px; font-weight: 800; color: #1a1a1a;
-      line-height: 1.35; margin-bottom: 16px;
-    }
-    .divider { width: 40px; height: 2px; background: #E07A5F; margin-bottom: 20px; }
-    .body-text {
-      font-size: 15px; color: #333; line-height: 1.8; margin-bottom: 16px;
-    }
-    .secondary { color: #666; }
-    .highlight {
-      background: #FFF5F2; border-left: 3px solid #E07A5F;
-      padding: 16px 18px; margin: 16px 0; border-radius: 0 6px 6px 0;
-    }
-    .highlight p { font-size: 14px; color: #333; line-height: 1.8; }
-    .bullet-list { list-style: none; margin: 14px 0; }
-    .bullet-list li {
-      font-size: 14px; color: #333; line-height: 1.75;
-      padding-left: 16px; position: relative; margin-bottom: 10px;
-    }
-    .bullet-list li::before {
-      content: '·'; color: #E07A5F; position: absolute;
-      left: 0; font-size: 20px; line-height: 1.4; font-weight: 700;
-    }
-    .note-box {
-      background: #F5F3EF; padding: 16px 18px;
-      border-radius: 6px; margin-top: 16px;
-    }
-    .note-box p { font-size: 13px; color: #555; line-height: 1.8; }
-    .note-box strong { color: #1a1a1a; font-weight: 600; }
-    .card-footer {
-      margin-top: 20px; padding-top: 16px;
-      border-top: 1px solid #EBEBEB;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .tag { font-size: 11px; color: #E07A5F; letter-spacing: 0.08em; font-weight: 600; }
-    .page-num { font-size: 11px; color: #CCC; }
-    .cover-inner {
-      padding: 48px 28px 32px;
-      min-height: 60vh;
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .cover-eyebrow {
-      font-size: 11px; font-weight: 700; color: #E07A5F;
-      letter-spacing: 0.2em; margin-bottom: 24px;
-    }
-    .cover-title {
-      font-size: 36px; font-weight: 900; color: #1a1a1a;
-      line-height: 1.2; margin-bottom: 16px;
-    }
-    .cover-subtitle { font-size: 16px; color: #666; line-height: 1.6; }
-    .cover-line { width: 48px; height: 2px; background: #E07A5F; margin: 20px 0; }
-    .big-quote {
-      font-size: 20px; font-weight: 700; color: #1a1a1a;
-      line-height: 1.5; margin: 16px 0;
-    }
+    /* === Reset === */
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{background:#111;font-family:var(--sans);color:var(--ink);
+      -webkit-font-smoothing:antialiased;padding:64px 32px;}
+    .sheet{display:flex;flex-direction:column;align-items:center;gap:48px;}
+    figure{margin:0;}
+    /* === Poster boards === */
+    .poster{position:relative;background:var(--paper);color:var(--ink);overflow:hidden;isolation:isolate;}
+    .poster.xhs{width:1080px;height:1440px;}
+    .poster figure{margin:0;}
+    .poster.xhs .content{padding:var(--sp-12) var(--sp-11);}
+    .content{position:relative;width:100%;height:100%;z-index:2;}
+    /* === Decorative layers === */
+    .dot-mat{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.06;
+      background-image:radial-gradient(var(--ink) 1.5px,transparent 1.5px);background-size:24px 24px;}
+    .cross-mat{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.04;
+      background-image:linear-gradient(var(--ink),var(--ink)),linear-gradient(90deg,var(--ink),var(--ink));
+      background-size:1px 14px,14px 1px;background-position:center,center;background-repeat:repeat;}
+    /* === WebGL canvas === */
+    .mag-bg{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.22;}
+    .poster.hero-bg .mag-bg{opacity:.38;}
+    /* === Typography roles (Swiss: larger = lighter) === */
+    .h-hero{font-family:var(--sans);font-weight:200;font-size:240px;line-height:1.02;letter-spacing:-.02em;margin:0;color:var(--ink);}
+    .h-statement{font-family:var(--sans);font-weight:200;font-size:180px;line-height:1.05;letter-spacing:-.015em;margin:0;color:var(--ink);}
+    .h-xl{font-family:var(--sans);font-weight:300;font-size:120px;line-height:1.08;letter-spacing:-.01em;margin:0;color:var(--ink);}
+    .h-md{font-family:var(--sans);font-weight:400;font-size:56px;line-height:1.18;margin:0;color:var(--ink);}
+    .lead{font-family:var(--sans-zh);font-weight:400;font-size:30px;line-height:1.55;color:var(--ink);margin:0;}
+    .body{font-family:var(--sans-zh);font-weight:400;font-size:26px;line-height:1.6;color:var(--ink);margin:0;}
+    .t-cat{font-family:var(--sans);font-weight:600;font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0;}
+    .t-meta{font-family:var(--mono);font-weight:500;font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-3);margin:0;}
+    .num-mega{font-family:var(--sans);font-weight:200;font-size:200px;line-height:.92;letter-spacing:-.03em;color:var(--ink);margin:0;}
+    .num-xl{font-family:var(--sans);font-weight:200;font-size:144px;line-height:.96;letter-spacing:-.02em;margin:0;}
+    .mono{font-family:var(--mono);}
+    /* XHS size overrides */
+    .poster.xhs .h-hero{font-size:168px;}
+    .poster.xhs .h-statement{font-size:124px;}
+    .poster.xhs .h-xl{font-size:96px;}
+    .poster.xhs .num-mega{font-size:168px;}
+    .poster.xhs .num-xl{font-size:120px;}
+    /* === Layout primitives === */
+    .stack{display:flex;flex-direction:column;}
+    .row{display:flex;flex-direction:row;}
+    .gap-3{gap:var(--sp-3);} .gap-4{gap:var(--sp-4);} .gap-5{gap:var(--sp-5);}
+    .gap-6{gap:var(--sp-6);} .gap-7{gap:var(--sp-7);} .gap-8{gap:var(--sp-8);}
+    .gap-9{gap:var(--sp-9);} .gap-10{gap:var(--sp-10);}
+    .grow{flex:1;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-7);}
+    .center{text-align:center;} .right{text-align:right;}
+    .uppercase{text-transform:uppercase;}
+    .hr-hairline{height:1px;background:var(--grey-2);border:0;margin:0;}
+    .hr-accent{height:3px;background:var(--accent);border:0;width:96px;margin:0;}
+    /* === Card fills === */
+    .card-ink{background:var(--ink);color:var(--paper);padding:var(--sp-8);}
+    .card-ink .t-cat,.card-ink .t-meta,.card-ink .lead,.card-ink .body,.card-ink .h-md{color:var(--paper);}
+    .card-accent{background:var(--accent);color:var(--accent-on);padding:var(--sp-8);}
+    .card-accent .t-cat,.card-accent .t-meta,.card-accent .lead,.card-accent .body,.card-accent .h-md{color:var(--accent-on);}
+    .card-fill{background:var(--grey-1);color:var(--ink);padding:var(--sp-8);}
+    .card-outlined{background:transparent;color:var(--ink);border:1px solid var(--grey-2);padding:var(--sp-8);}
+    /* === Chrome-min === */
+    .chrome-min{display:flex;justify-content:space-between;align-items:center;
+      font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--grey-3);padding-bottom:var(--sp-6);border-bottom:1px solid var(--grey-2);
+      margin-bottom:var(--sp-9);}
+    /* === Stacked Ledger (S11) === */
+    .stacked-ledger{display:flex;flex-direction:column;}
+    .stacked-ledger .ledger-row{display:grid;grid-template-columns:200px 1fr;
+      gap:var(--sp-7);align-items:baseline;padding:var(--sp-7) 0;border-bottom:1px solid var(--grey-2);}
+    .stacked-ledger .ledger-row:first-child{padding-top:0;}
+    .stacked-ledger .ledger-row:last-child{border-bottom:0;}
+    .stacked-ledger .ledger-num{font-family:var(--sans);font-weight:200;font-size:88px;
+      line-height:1;letter-spacing:-.02em;margin:0;color:var(--accent);}
+    .stacked-ledger .ledger-lbl{font-family:var(--sans-zh);font-weight:500;font-size:28px;line-height:1.3;color:var(--ink);}
+    .stacked-ledger .ledger-lbl .sub{display:block;font-weight:400;font-size:20px;color:var(--grey-3);margin-top:var(--sp-3);}
+    /* === H-Bar Chart (S10) === */
+    .h-bar-chart{display:grid;gap:var(--sp-6);}
+    .h-bar-chart .bar-row{display:grid;grid-template-columns:1fr;gap:var(--sp-4);}
+    .h-bar-chart .bar-row .row-lbl{font-family:var(--sans-zh);font-weight:500;font-size:26px;color:var(--ink);}
+    .h-bar-chart .bar-row .row-track{position:relative;height:28px;background:var(--grey-1);}
+    .h-bar-chart .bar-row .row-fill{position:absolute;left:0;top:0;bottom:0;width:var(--w,50%);background:var(--accent);}
+    .h-bar-chart .bar-row .row-val{font-family:var(--mono);font-weight:500;font-size:24px;letter-spacing:.04em;color:var(--ink);}
+    /* === Vertical Pipeline (M14 adapted for Swiss) === */
+    .pipeline-v{display:flex;flex-direction:column;gap:0;}
+    .pipeline-v .step{display:grid;grid-template-columns:72px 1fr;gap:var(--sp-6);
+      padding:var(--sp-7) 0;border-bottom:1px solid var(--grey-2);align-items:start;}
+    .pipeline-v .step:last-child{border-bottom:0;}
+    .pipeline-v .step-nb{font-family:var(--mono);font-weight:600;font-size:22px;
+      letter-spacing:.12em;color:var(--accent);padding-top:6px;}
+    .pipeline-v .step-title{font-family:var(--sans-zh);font-weight:600;font-size:32px;
+      line-height:1.2;color:var(--ink);margin:0 0 var(--sp-3);}
+    .pipeline-v .step-desc{font-family:var(--sans-zh);font-weight:400;font-size:24px;
+      line-height:1.5;color:var(--grey-3);margin:0;}
+    .pipeline-v .step-tag{display:inline-block;font-family:var(--mono);font-size:18px;
+      letter-spacing:.1em;text-transform:uppercase;color:var(--accent-on);
+      background:var(--accent);padding:4px 12px;margin-top:var(--sp-3);}
+    /* === Marginalia Essay (M11 adapted) === */
+    .marginalia-layout{display:grid;grid-template-columns:1fr 220px;gap:var(--sp-8);}
+    .marginalia-main{display:flex;flex-direction:column;gap:var(--sp-6);}
+    .marginalia-side{display:flex;flex-direction:column;gap:var(--sp-6);
+      border-left:1px solid var(--grey-2);padding-left:var(--sp-7);}
+    .marginalia-side .side-kw{font-family:var(--mono);font-size:18px;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--accent);line-height:1.4;}
+    .marginalia-side .side-note{font-family:var(--sans-zh);font-size:20px;
+      line-height:1.5;color:var(--grey-3);}
+    /* === Two-column split layout === */
+    .split-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;height:100%;}
+    .split-col{display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-12) var(--sp-9);}
+    .split-col.col-left{border-right:1px solid var(--grey-2);}
+    .split-col.col-accent{background:var(--accent);color:var(--accent-on);}
+    .split-col.col-accent .t-cat,.split-col.col-accent .t-meta,
+    .split-col.col-accent .lead,.split-col.col-accent .body{color:var(--accent-on);}
+    .split-col.col-ink{background:var(--ink);color:var(--paper);}
+    .split-col.col-ink .t-cat,.split-col.col-ink .t-meta,
+    .split-col.col-ink .lead,.split-col.col-ink .body{color:var(--paper);}
+    /* === Comparison blocks === */
+    .compare-block{padding:var(--sp-7);border:1px solid var(--grey-2);margin-bottom:var(--sp-5);}
+    .compare-block.is-accent{background:var(--accent);border-color:var(--accent);}
+    .compare-block.is-accent .compare-label,.compare-block.is-accent .compare-val{color:var(--accent-on);}
+    .compare-label{font-family:var(--mono);font-size:18px;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--grey-3);margin:0 0 var(--sp-4);}
+    .compare-val{font-family:var(--sans);font-weight:200;font-size:72px;
+      line-height:1;letter-spacing:-.02em;margin:0;color:var(--ink);}
+    .compare-desc{font-family:var(--sans-zh);font-size:22px;line-height:1.5;
+      color:var(--grey-3);margin:var(--sp-4) 0 0;}
+    /* === Flow diagram === */
+    .flow-diagram{display:flex;flex-direction:column;gap:0;}
+    .flow-step{display:flex;align-items:center;gap:var(--sp-5);padding:var(--sp-5) 0;}
+    .flow-step .flow-node{background:var(--accent);color:var(--accent-on);
+      font-family:var(--mono);font-size:18px;letter-spacing:.08em;
+      padding:var(--sp-4) var(--sp-6);white-space:nowrap;flex-shrink:0;}
+    .flow-step .flow-arrow{font-family:var(--mono);font-size:20px;color:var(--grey-3);flex-shrink:0;}
+    .flow-step .flow-desc{font-family:var(--sans-zh);font-size:22px;color:var(--grey-3);line-height:1.4;}
+    .flow-connector{width:2px;height:24px;background:var(--grey-2);margin-left:60px;}
+    /* === Closing page styles === */
+    .closing-quote{font-family:var(--sans-zh);font-weight:300;font-size:48px;
+      line-height:1.4;color:var(--ink);margin:0;border-left:4px solid var(--accent);padding-left:var(--sp-7);}
+    .closing-question{font-family:var(--sans-zh);font-weight:200;font-size:64px;
+      line-height:1.3;color:var(--ink);margin:0;}
+    /* === Issue strip === */
+    .issue-strip{display:flex;justify-content:space-between;align-items:center;
+      font-family:var(--mono);font-size:18px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--grey-3);padding-top:var(--sp-6);border-top:1px solid var(--grey-2);margin-top:auto;}
   </style>
 </head>
 <body>
-
-<!-- Card 1: 封面 -->
-<div class="card">
-  <div class="cover-inner">
-    <div class="cover-eyebrow">深度解读 · 2026.05</div>
-    <div class="cover-title">Claude Opus 4.8 发了</div>
-    <div class="cover-line"></div>
-    <div class="cover-subtitle">41天闪电迭代，这次更新到底在做什么？<br>一个设计师的视角拆解。</div>
-  </div>
-</div>
-
-<!-- Card 2: 还债 -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">01 / 08</div>
-    <div class="section-title">先说还 4.7 债的部分</div>
-    <div class="divider"></div>
-    <p class="body-text">Opus 4.7 是 4 月 16 日发的，4.8 是 5 月 28 日，中间只有 41 天。Anthropic 之前从没有过这个发版节奏。</p>
-    <p class="body-text">为什么这么急？因为 4.7 翻车了。Reddit 上「Opus 4.7 is not an upgrade but a serious regression」拿了 2300 赞。X 上吐槽帖 1.4 万赞。TechCrunch 直接把 4.8 快速发布归因为"chilly reception to Opus 4.7"。</p>
-    <p class="body-text secondary">这次还了什么债：</p>
-    <ul class="bullet-list">
-      <li>effort 控制还给用户了——4.7 的 adaptive reasoning 被骂翻，用户觉得模型在偷懒</li>
-      <li>写代码不再瞎自信了，会主动标出不确定的地方（官方称降低 4 倍幻觉率）</li>
-      <li>价格不变 $5/$25，没趁机涨价</li>
-      <li>上下文窗口利用率提升，不再无意义复读前文</li>
-    </ul>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">02</span>
+<main class="sheet">
+<!-- PAGE 1: S01 Accent Cover + WebGL -->
+<section class="poster xhs hero-bg" id="xhs-01">
+  <canvas class="mag-bg" data-seed="cover-01"></canvas>
+  <div class="cross-mat"></div>
+  <div class="content stack gap-7" style="height:100%;display:flex;flex-direction:column;">
+    <div class="chrome-min">
+      <span>AI · 产品解读</span>
+      <span>2026.05 · Vol.01</span>
+    </div>
+    <div class="stack gap-5">
+      <p class="t-cat">Claude Opus 4.8</p>
+      <h1 class="h-statement" style="font-weight:200;line-height:0.95;letter-spacing:-.02em;">发了</h1>
+      <p class="lead" style="max-width:600px;">深度解读，设计师视角拆解</p>
+    </div>
+    <div class="grow"></div>
+    <!-- Decorative large number -->
+    <div style="position:absolute;right:-24px;bottom:160px;font-family:var(--sans);
+      font-weight:200;font-size:320px;line-height:0.85;letter-spacing:-.05em;
+      color:var(--accent);opacity:0.12;z-index:1;pointer-events:none;user-select:none;">4.8</div>
+    <hr class="hr-accent">
+    <div class="row gap-6" style="flex-wrap:wrap;row-gap:12px;">
+      <p class="t-meta">41天发版</p>
+      <p class="t-meta">/ 幻觉降4倍</p>
+      <p class="t-meta">/ Fast Mode</p>
+      <p class="t-meta">/ Dynamic Workflows</p>
+    </div>
+    <div class="issue-strip" style="border-top:none;padding-top:0;margin-top:var(--sp-5);">
+      <span>Issue 01</span>
+      <span>—</span>
+      <span>设计师视角</span>
     </div>
   </div>
-</div>
-
-<!-- Card 3: 发版节奏 -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">02 / 08</div>
-    <div class="section-title">41 天发版的节奏逻辑</div>
-    <div class="divider"></div>
-    <p class="body-text">4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，完全一样。base model 没有重做预训练，迭代的是 post-training——RLHF、safety、tool-use 微调。</p>
-    <div class="highlight">
-      <p>base model 复用，post-training 快速迭代——这才是能 41 天切一版的真正原因。不是重新训了一个模型，是在同一个底座上反复调教。</p>
+</section>
+<!-- PAGE 2: M08 Tall Ledger — 还4.7的债 -->
+<section class="poster xhs" id="xhs-02">
+  <div class="dot-mat"></div>
+  <div class="content stack gap-6" style="height:100%;display:flex;flex-direction:column;">
+    <div class="chrome-min">
+      <span>Debt · 还债</span>
+      <span>Page 02</span>
     </div>
-    <p class="body-text">时机也很微妙：刚好赶在 GPT-5.6 传言发布前。芯片厂商那套"抢先发布卡位"的打法，已经搬到大模型行业了。</p>
-    <p class="body-text secondary">对用户的启示：以后模型更新会越来越频繁，但不代表每次都是"换代"。大部分是同一个底座的调优版本。别每次都急着迁移。</p>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">03</span>
+    <!-- Large anchor number -->
+    <div class="row gap-7" style="align-items:flex-end;margin-bottom:var(--sp-5);">
+      <div>
+        <p class="t-cat" style="margin-bottom:var(--sp-4);">还4.7的债</p>
+        <div style="font-family:var(--sans);font-weight:200;font-size:160px;
+          line-height:0.88;letter-spacing:-.04em;color:var(--accent);">41</div>
+        <p class="t-meta" style="margin-top:var(--sp-4);">天 · 发版间隔</p>
+      </div>
+      <div style="flex:1;padding-bottom:12px;">
+        <p class="body" style="color:var(--grey-3);font-size:24px;line-height:1.5;">
+          从4.7到4.8，<br>Anthropic用41天<br>还清了技术债
+        </p>
+      </div>
     </div>
-  </div>
-</div>
-
-<!-- Card 4: Fast Mode -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">03 / 08</div>
-    <div class="section-title">Fast Mode "3 倍便宜"<br>到底是给谁的</div>
-    <div class="divider"></div>
-    <p class="body-text">大部分报道讲错了。"3 倍便宜"是相对自家上一代 Fast Mode 的价格，不是相对标准模式。实际上 Fast Mode 依然比标准模式贵近 2 倍。</p>
-    <p class="body-text">真正的目标客户是通过 API 接入的大企业。微软内部甚至要求员工停止使用 Claude Code，因为 API 账单太肉疼了。Anthropic 降价就是为了留住这批大客户。</p>
-    <div class="highlight">
-      <p>对个人开发者来说，月度订阅档（$20 Pro / $100 Max）依然是最划算的方案。Fast Mode 降价的红包不是发给我们的，是发给企业采购的。</p>
+    <hr class="hr-hairline">
+    <div class="stacked-ledger" style="flex:1;">
+      <div class="ledger-row">
+        <div class="ledger-num" style="font-size:52px;color:var(--grey-3);">2300</div>
+        <div class="ledger-lbl">Reddit 吐槽赞数
+          <span class="sub">r/ClaudeAI · effort控制失效，指令遵循退化</span></div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-num" style="font-size:52px;color:var(--grey-3);">1.4万</div>
+        <div class="ledger-lbl">X 上点赞数
+          <span class="sub">社区反馈幻觉问题，事实准确率下滑</span></div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-num" style="font-size:52px;color:var(--accent);">4×</div>
+        <div class="ledger-lbl">幻觉降低倍数
+          <span class="sub">4.8 vs 4.7 · 事实准确率大幅提升</span></div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-num" style="font-size:52px;color:var(--accent);">✓</div>
+        <div class="ledger-lbl">effort 控制回归
+          <span class="sub">指令遵循恢复正常 · TechCrunch 归因报道</span></div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-num" style="font-size:52px;color:var(--grey-3);">=$</div>
+        <div class="ledger-lbl">API 价格不变
+          <span class="sub">修复质量问题，定价维持原位</span></div>
+      </div>
     </div>
-    <p class="body-text secondary">一个判断标准：如果你每月 API 花费低于 $200，订阅比按量计费划算。超过这个数再考虑 Fast Mode。</p>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">04</span>
-    </div>
-  </div>
-</div>
-
-<!-- Card 5: Dynamic Workflows -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">04 / 08</div>
-    <div class="section-title">Dynamic Workflows<br>才是这次真正的大招</div>
-    <div class="divider"></div>
-    <p class="body-text">这个功能媒体报道很少，但我认为是 4.8 最值得关注的更新。Claude 现在可以在运行时自己决定用什么工具、走什么分支、按什么顺序执行。</p>
-    <div class="highlight">
-      <p>不是你写好 workflow 它来跑——是它自己规划 workflow 然后执行。从"执行者"变成了"规划者+执行者"。</p>
-    </div>
-    <p class="body-text">对设计师来说这意味着什么？以后你描述一个需求，它能自己决定是先搜竞品资料、再画线框、还是直接生成代码。你不需要手动编排每一步 agent 流程了。</p>
-    <p class="body-text secondary">这也是为什么 Claude Code 体验进步最明显——底层就是 Dynamic Workflows 在驱动多步骤任务的规划和执行。</p>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">05</span>
+    <div class="issue-strip">
+      <span>Fixes · 修复清单</span><span>—</span><span>Page 02 / 08</span>
     </div>
   </div>
-</div>
-
-<!-- Card 6: Terminal-Bench -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">05 / 08</div>
-    <div class="section-title">Terminal-Bench 第一<br>意味着什么</div>
-    <div class="divider"></div>
-    <p class="body-text">Opus 4.8 在 Terminal-Bench 登顶。这个 benchmark 和传统选择题不一样，它测的是"在真实终端环境里完成复杂多步骤任务"的能力。</p>
-    <ul class="bullet-list">
-      <li>真的开 shell、写代码、装依赖、调试报错、部署服务</li>
-      <li>和 SWE-bench 的区别：后者只改代码，Terminal-Bench 测端到端</li>
-      <li>对 Claude Code / Cursor 用户：体感会明显好于 4.7</li>
-      <li>对 agent 开发者：模型终于能可靠地串联多个工具了</li>
-    </ul>
-    <div class="note-box">
-      <p><strong>但也别太迷信 benchmark。</strong>4.7 的 SWE-bench 分数也很高，但实际体感被骂惨了。跑分和日常使用之间永远有 gap，真正的验证是你自己用一周后的感受。</p>
+</section>
+<!-- PAGE 3: M14 Vertical Pipeline — 发版节奏逻辑 + WebGL -->
+<section class="poster xhs hero-bg" id="xhs-03">
+  <canvas class="mag-bg" data-seed="pipeline-03"></canvas>
+  <div class="content stack gap-6" style="height:100%;display:flex;flex-direction:column;">
+    <div class="chrome-min">
+      <span>Release Logic · 节奏</span>
+      <span>Page 03</span>
     </div>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">06</span>
+    <div class="stack gap-4" style="margin-bottom:var(--sp-6);">
+      <p class="t-cat">发版节奏逻辑</p>
+      <h2 class="h-xl" style="font-weight:200;">从训练到上线<br>的四步棋</h2>
     </div>
-  </div>
-</div>
-
-<!-- Card 7: 设计师视角 -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">06 / 08</div>
-    <div class="section-title">作为设计师<br>我真正关注什么</div>
-    <div class="divider"></div>
-    <p class="body-text">模型迭代到这个阶段，差异化已经不在"智商"了。我日常用 AI 辅助设计工作，真正影响我体验的是这几点：</p>
-    <ul class="bullet-list">
-      <li>指令跟随的稳定性——同一个 prompt 跑 5 次，结果一致吗？不一致我就没法建立工作流</li>
-      <li>工具调用的准确率——MCP 接 Figma 的时候不瞎传参数吗？一个错误调用比不调用更浪费时间</li>
-      <li>上下文窗口的利用率——200K token 不是让你复读前文的，是让你记住项目上下文</li>
-      <li>诚实度——不确定就说不确定，别编一个看起来正确的答案骗我</li>
-    </ul>
-    <div class="highlight">
-      <p>4.8 在"降幻觉"这点上有实质进步。对于做设计 agent 的人来说，模型的诚实度比跑分重要 10 倍。一个会说"我不确定"的模型，比一个"自信地编"的模型有用得多。</p>
+    <div class="pipeline-v" style="flex:1;">
+      <div class="step">
+        <div class="step-nb">01</div>
+        <div>
+          <h3 class="step-title">Base Model</h3>
+          <p class="step-desc">知识截止 2026.1 · 预训练完成</p>
+          <span class="step-tag">Foundation</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-nb">02</div>
+        <div>
+          <h3 class="step-title">Post-Training 迭代</h3>
+          <p class="step-desc">对齐、RLHF、工具调用优化<br>幻觉抑制 · effort 控制校准</p>
+          <span class="step-tag">Fine-tune</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-nb">03</div>
+        <div>
+          <h3 class="step-title">41天切版</h3>
+          <p class="step-desc">快速迭代窗口 · 抢占竞品发版间隙<br>内部 A/B 测试通过即上线</p>
+          <span class="step-tag">Ship</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-nb">04</div>
+        <div>
+          <h3 class="step-title">狙击 GPT-5.6</h3>
+          <p class="step-desc">抢占市场心智 · 在竞品发版前<br>重新建立质量基准</p>
+          <span class="step-tag">Strategy</span>
+        </div>
+      </div>
     </div>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8</span>
-      <span class="page-num">07</span>
-    </div>
-  </div>
-</div>
-
-<!-- Card 8: 总结 -->
-<div class="card">
-  <div class="card-inner">
-    <div class="section-num">07 / 08</div>
-    <div class="section-title">总结：不是革命，是补课</div>
-    <div class="divider"></div>
-    <p class="big-quote">4.8 不是革命，是补课。但补课的速度和方向都对了。</p>
-    <p class="body-text">41 天一个版本、Terminal-Bench 登顶、Dynamic Workflows 开放——Anthropic 在用行动回应 4.7 的差评。</p>
-    <p class="body-text">作为用户，这种"反馈被听到、然后快速修正"的感觉，比任何 benchmark 数字都让人安心。这才是一个产品团队该有的迭代态度。</p>
-    <div class="note-box">
-      <p>预计下次更新 7 月中旬左右。到时候再来拆。<br><br>
-      如果觉得这种深度拆解有帮助，点个赞让我知道，我会继续写。关注不迷路，下次更新第一时间拆给你看。</p>
-    </div>
-    <div class="card-footer">
-      <span class="tag">Claude Opus 4.8 · 深度解读</span>
-      <span class="page-num">08</span>
+    <div class="issue-strip">
+      <span>Timeline · 时间线</span><span>—</span><span>Page 03 / 08</span>
     </div>
   </div>
-</div>
+</section>
+<!-- PAGE 4: S02 Two Signals — Fast Mode 定价 -->
+<section class="poster xhs" id="xhs-04" style="display:flex;flex-direction:column;">
+  <div class="dot-mat"></div>
+  <!-- Top header band -->
+  <div style="padding:var(--sp-9) var(--sp-11) var(--sp-6);border-bottom:1px solid var(--grey-2);z-index:2;position:relative;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <p class="t-cat">Fast Mode · 定价逻辑</p>
+      <p class="t-meta">Page 04</p>
+    </div>
+  </div>
+  <!-- Two-column body -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;z-index:2;position:relative;">
+    <!-- Left: Large 3× anchor -->
+    <div style="display:flex;flex-direction:column;gap:var(--sp-6);
+      padding:var(--sp-8) var(--sp-9);border-right:1px solid var(--grey-2);">
+      <div>
+        <p class="t-meta" style="margin-bottom:var(--sp-4);">溢价倍数</p>
+        <div style="font-family:var(--sans);font-weight:200;font-size:200px;
+          line-height:0.88;letter-spacing:-.04em;color:var(--accent);">3×</div>
+      </div>
+      <hr class="hr-hairline">
+      <p class="lead" style="font-size:26px;line-height:1.5;">Fast Mode 的速度溢价，不是给个人用户设计的</p>
+      <div style="background:var(--grey-1);padding:var(--sp-6);">
+        <p class="t-meta" style="margin-bottom:var(--sp-4);">微软案例</p>
+        <p class="body" style="font-size:22px;color:var(--grey-3);line-height:1.5;">
+          微软曾停用 Claude Code，原因之一是 Fast Mode 的 API 成本在企业规模下难以预算
+        </p>
+      </div>
+    </div>
+    <!-- Right: Comparison blocks -->
+    <div style="display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-8) var(--sp-9);">
+      <p class="t-meta" style="margin-bottom:var(--sp-3);">价格对比</p>
+      <div class="compare-block is-accent">
+        <p class="compare-label">企业 API</p>
+        <p class="compare-val" style="font-size:56px;color:var(--accent-on);">按量</p>
+        <p class="compare-desc" style="color:var(--accent-on);opacity:.85;">
+          Fast Mode 3× 溢价合理<br>大批量调用可谈折扣
+        </p>
+      </div>
+      <div class="compare-block">
+        <p class="compare-label">个人订阅</p>
+        <p class="compare-val" style="font-size:56px;">$20</p>
+        <p class="compare-desc">Max 计划不含 Fast Mode<br>速度优先需升级企业版</p>
+      </div>
+      <div style="padding:var(--sp-5);border:1px solid var(--grey-2);">
+        <p class="t-meta" style="margin-bottom:var(--sp-3);">结论</p>
+        <p class="body" style="font-size:22px;line-height:1.5;color:var(--grey-3);">
+          Fast Mode 是 B2B 产品，<br>不是消费者功能
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom strip -->
+  <div style="padding:var(--sp-6) var(--sp-11);border-top:1px solid var(--grey-2);z-index:2;position:relative;">
+    <div class="issue-strip" style="border-top:none;padding-top:0;margin-top:0;">
+      <span>Pricing · 定价</span><span>—</span><span>Page 04 / 08</span>
+    </div>
+  </div>
+</section>
+<!-- PAGE 5: M11 Marginalia Essay — Dynamic Workflows -->
+<section class="poster xhs" id="xhs-05">
+  <div class="cross-mat"></div>
+  <div class="content stack gap-6" style="height:100%;display:flex;flex-direction:column;">
+    <div class="chrome-min">
+      <span>Feature · 功能</span>
+      <span>Page 05</span>
+    </div>
+    <div class="stack gap-4" style="margin-bottom:var(--sp-5);">
+      <p class="t-cat">Dynamic Workflows</p>
+      <h2 class="h-xl" style="font-weight:200;line-height:1.0;">自主规划<br>并行执行</h2>
+    </div>
+    <div class="marginalia-layout" style="flex:1;">
+      <!-- Main column -->
+      <div class="marginalia-main">
+        <p class="lead" style="font-size:27px;line-height:1.55;">
+          4.8 最重要的能力升级：模型可以自主拆解任务、生成子 agent、并行执行，最后合并结果。
+        </p>
+        <hr class="hr-hairline">
+        <p class="body" style="font-size:24px;color:var(--grey-3);line-height:1.6;">
+          不再是"你给一个任务，它做一件事"，而是"你给一个目标，它自己规划路径"。
+        </p>
+        <hr class="hr-hairline">
+        <!-- Flow diagram -->
+        <div style="margin-top:var(--sp-4);">
+          <p class="t-meta" style="margin-bottom:var(--sp-5);">执行流程</p>
+          <div class="flow-diagram">
+            <div class="flow-step">
+              <div class="flow-node">一个任务</div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+              <div class="flow-node">自主拆解</div>
+              <div class="flow-desc">识别子任务，分配优先级</div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+              <div class="flow-node">并行执行</div>
+              <div class="flow-desc">多 subagent 同时工作</div>
+            </div>
+            <div class="flow-connector"></div>
+            <div class="flow-step">
+              <div class="flow-node">合并 PR</div>
+              <div class="flow-desc">结果整合，冲突解决</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Marginal column -->
+      <div class="marginalia-side">
+        <div class="side-kw">自主规划</div>
+        <div class="side-note">无需人工分解任务结构</div>
+        <hr class="hr-hairline">
+        <div class="side-kw">并行 subagent</div>
+        <div class="side-note">多线程同时推进</div>
+        <hr class="hr-hairline">
+        <div class="side-kw">端到端</div>
+        <div class="side-note">从目标到交付物</div>
+        <hr class="hr-hairline">
+        <div class="side-kw">工具调用</div>
+        <div class="side-note">代码、搜索、文件系统</div>
+      </div>
+    </div>
+    <div class="issue-strip">
+      <span>Workflows · 工作流</span><span>—</span><span>Page 05 / 08</span>
+    </div>
+  </div>
+</section>
+<!-- PAGE 6: M08 Tall Ledger — 75万行Rust，11天 -->
+<section class="poster xhs" id="xhs-06">
+  <div class="dot-mat"></div>
+  <div class="content stack gap-6" style="height:100%;display:flex;flex-direction:column;">
+    <div class="chrome-min">
+      <span>Case Study · 案例</span>
+      <span>Page 06</span>
+    </div>
+    <div class="stack gap-3" style="margin-bottom:var(--sp-5);">
+      <p class="t-cat">Bun 的 11 天迁移</p>
+      <h2 class="h-xl" style="font-weight:200;line-height:1.0;">Zig → Rust<br>用 Dynamic Workflows</h2>
+    </div>
+    <!-- Three large numbers as visual anchors -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-5);
+      padding:var(--sp-7) 0;border-top:1px solid var(--grey-2);border-bottom:1px solid var(--grey-2);
+      margin-bottom:var(--sp-6);">
+      <div style="text-align:center;">
+        <div style="font-family:var(--sans);font-weight:200;font-size:80px;
+          line-height:0.9;letter-spacing:-.03em;color:var(--accent);">75万</div>
+        <p class="t-meta" style="margin-top:var(--sp-4);font-size:16px;">行代码</p>
+      </div>
+      <div style="text-align:center;border-left:1px solid var(--grey-2);border-right:1px solid var(--grey-2);">
+        <div style="font-family:var(--sans);font-weight:200;font-size:80px;
+          line-height:0.9;letter-spacing:-.03em;color:var(--ink);">11</div>
+        <p class="t-meta" style="margin-top:var(--sp-4);font-size:16px;">天完成</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--sans);font-weight:200;font-size:80px;
+          line-height:0.9;letter-spacing:-.03em;color:var(--grey-3);">1.3万</div>
+        <p class="t-meta" style="margin-top:var(--sp-4);font-size:16px;">unsafe块</p>
+      </div>
+    </div>
+    <!-- Ledger rows -->
+    <div class="stacked-ledger" style="flex:1;">
+      <div class="ledger-row" style="grid-template-columns:160px 1fr;">
+        <div class="ledger-num" style="font-size:44px;color:var(--accent);">规模</div>
+        <div class="ledger-lbl">750,000 行 Zig 代码
+          <span class="sub">完整运行时 + 标准库 + 工具链</span></div>
+      </div>
+      <div class="ledger-row" style="grid-template-columns:160px 1fr;">
+        <div class="ledger-num" style="font-size:44px;color:var(--ink);">速度</div>
+        <div class="ledger-lbl">11 天端到端完成
+          <span class="sub">人工审查 + AI 并行迁移 + 测试通过</span></div>
+      </div>
+      <div class="ledger-row" style="grid-template-columns:160px 1fr;">
+        <div class="ledger-num" style="font-size:44px;color:var(--grey-3);">挑战</div>
+        <div class="ledger-lbl">13,000 个 unsafe 块
+          <span class="sub">逐一审查，确保内存安全语义等价</span></div>
+      </div>
+      <div class="ledger-row" style="grid-template-columns:160px 1fr;">
+        <div class="ledger-num" style="font-size:44px;color:var(--accent);">意义</div>
+        <div class="ledger-lbl">Dynamic Workflows 首个公开案例
+          <span class="sub">证明 AI 可以接管大规模迁移任务</span></div>
+      </div>
+    </div>
+    <div class="issue-strip">
+      <span>Case · Bun Migration</span><span>—</span><span>Page 06 / 08</span>
+    </div>
+  </div>
+</section>
+<!-- PAGE 7: M03 Editorial Split — 设计师关注什么 -->
+<section class="poster xhs" id="xhs-07" style="display:flex;flex-direction:column;">
+  <div class="cross-mat"></div>
+  <!-- Top header -->
+  <div style="padding:var(--sp-9) var(--sp-11) var(--sp-6);border-bottom:1px solid var(--grey-2);z-index:2;position:relative;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <p class="t-cat">Designer POV · 设计师视角</p>
+      <p class="t-meta">Page 07</p>
+    </div>
+  </div>
+  <!-- Two-column body -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;z-index:2;position:relative;">
+    <!-- Left: Pull quote -->
+    <div style="display:flex;flex-direction:column;justify-content:center;
+      padding:var(--sp-9) var(--sp-8);border-right:1px solid var(--grey-2);gap:var(--sp-7);">
+      <div style="width:48px;height:4px;background:var(--accent);"></div>
+      <p style="font-family:var(--sans-zh);font-weight:200;font-size:52px;
+        line-height:1.25;color:var(--ink);margin:0;">
+        诚实度<br>比跑分<br>重要<br>10倍
+      </p>
+      <div style="width:48px;height:4px;background:var(--grey-2);"></div>
+      <p class="body" style="font-size:22px;color:var(--grey-3);line-height:1.5;">
+        对设计 agent 来说，<br>不乱改、不幻觉、<br>不越权才是核心指标
+      </p>
+    </div>
+    <!-- Right: 4 bullet points -->
+    <div style="display:flex;flex-direction:column;gap:var(--sp-5);
+      padding:var(--sp-9) var(--sp-8);">
+      <p class="t-meta" style="margin-bottom:var(--sp-3);">设计师关注的4个维度</p>
+      <div style="display:flex;flex-direction:column;gap:0;flex:1;">
+        <div style="padding:var(--sp-6) 0;border-bottom:1px solid var(--grey-2);">
+          <div style="display:flex;align-items:baseline;gap:var(--sp-5);">
+            <span style="font-family:var(--mono);font-size:18px;color:var(--accent);
+              font-weight:600;flex-shrink:0;">01</span>
+            <div>
+              <p class="lead" style="font-size:26px;font-weight:600;margin-bottom:var(--sp-3);">指令稳定性</p>
+              <p class="body" style="font-size:21px;color:var(--grey-3);">给了约束就守约束，不自作主张改设计</p>
+            </div>
+          </div>
+        </div>
+        <div style="padding:var(--sp-6) 0;border-bottom:1px solid var(--grey-2);">
+          <div style="display:flex;align-items:baseline;gap:var(--sp-5);">
+            <span style="font-family:var(--mono);font-size:18px;color:var(--accent);
+              font-weight:600;flex-shrink:0;">02</span>
+            <div>
+              <p class="lead" style="font-size:26px;font-weight:600;margin-bottom:var(--sp-3);">工具调用准确率</p>
+              <p class="body" style="font-size:21px;color:var(--grey-3);">调用 Figma API 不出错，参数不乱填</p>
+            </div>
+          </div>
+        </div>
+        <div style="padding:var(--sp-6) 0;border-bottom:1px solid var(--grey-2);">
+          <div style="display:flex;align-items:baseline;gap:var(--sp-5);">
+            <span style="font-family:var(--mono);font-size:18px;color:var(--accent);
+              font-weight:600;flex-shrink:0;">03</span>
+            <div>
+              <p class="lead" style="font-size:26px;font-weight:600;margin-bottom:var(--sp-3);">上下文利用率</p>
+              <p class="body" style="font-size:21px;color:var(--grey-3);">记住设计系统规范，不重复问同一个问题</p>
+            </div>
+          </div>
+        </div>
+        <div style="padding:var(--sp-6) 0;">
+          <div style="display:flex;align-items:baseline;gap:var(--sp-5);">
+            <span style="font-family:var(--mono);font-size:18px;color:var(--accent);
+              font-weight:600;flex-shrink:0;">04</span>
+            <div>
+              <p class="lead" style="font-size:26px;font-weight:600;margin-bottom:var(--sp-3);">拒绝幻觉</p>
+              <p class="body" style="font-size:21px;color:var(--grey-3);">不知道就说不知道，不编造组件名称</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom strip -->
+  <div style="padding:var(--sp-6) var(--sp-11);border-top:1px solid var(--grey-2);z-index:2;position:relative;">
+    <div class="issue-strip" style="border-top:none;padding-top:0;margin-top:0;">
+      <span>Criteria · 评估维度</span><span>—</span><span>Page 07 / 08</span>
+    </div>
+  </div>
+</section>
+<!-- __PAGE_8__ -->
 
-</body>
-</html>
+
+
+
+
+
+
+
+
+
+
