@@ -2,299 +2,247 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1080">
-  <title>Claude Opus 4.8 发了</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Opus 4.8 深度解读</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #D8D4CC;
-      padding: 48px 40px;
-      font-family: 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: #1a1a1a;
+      padding: 16px;
+      font-family: -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif;
     }
     .card {
-      width: 1080px;
-      height: 1440px;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto 20px;
       background: #FAFAF8;
-      margin: 0 auto 48px;
-      position: relative;
+      border-radius: 12px;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      position: relative;
     }
     .card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 5px;
+      height: 4px;
       background: #E07A5F;
-      z-index: 1;
     }
-    .card-cover { padding: 80px; display: flex; flex-direction: column; }
-    .card-content { padding: 80px 80px 60px; display: flex; flex-direction: column; }
+    .card-inner { padding: 32px 28px 28px; }
     .section-num {
-      font-size: 12px; font-weight: 700; color: #E07A5F;
-      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;
+      font-size: 11px; font-weight: 700; color: #E07A5F;
+      letter-spacing: 0.2em; margin-bottom: 12px;
     }
     .section-title {
-      font-size: 30px; font-weight: 700; color: #1a1a1a;
-      line-height: 1.3; margin-bottom: 22px;
+      font-size: 24px; font-weight: 800; color: #1a1a1a;
+      line-height: 1.35; margin-bottom: 16px;
     }
-    .divider { width: 48px; height: 2px; background: #E07A5F; margin-bottom: 38px; }
-    .body-text { font-size: 19px; color: #1a1a1a; line-height: 1.85; margin-bottom: 26px; }
-    .secondary { color: #555; }
+    .divider { width: 40px; height: 2px; background: #E07A5F; margin-bottom: 20px; }
+    .body-text {
+      font-size: 15px; color: #333; line-height: 1.8; margin-bottom: 16px;
+    }
+    .secondary { color: #666; }
     .highlight {
       background: #FFF5F2; border-left: 3px solid #E07A5F;
-      padding: 26px 30px; margin: 28px 0; border-radius: 0 6px 6px 0;
+      padding: 16px 18px; margin: 16px 0; border-radius: 0 6px 6px 0;
     }
-    .highlight p { font-size: 18px; color: #1a1a1a; line-height: 1.85; }
-    .bullet-list { list-style: none; margin: 20px 0; }
+    .highlight p { font-size: 14px; color: #333; line-height: 1.8; }
+    .bullet-list { list-style: none; margin: 14px 0; }
     .bullet-list li {
-      font-size: 18px; color: #1a1a1a; line-height: 1.8;
-      padding-left: 22px; position: relative; margin-bottom: 14px;
+      font-size: 14px; color: #333; line-height: 1.75;
+      padding-left: 16px; position: relative; margin-bottom: 10px;
     }
     .bullet-list li::before {
       content: '·'; color: #E07A5F; position: absolute;
-      left: 0; font-size: 24px; line-height: 1.5; font-weight: 700;
+      left: 0; font-size: 20px; line-height: 1.4; font-weight: 700;
     }
-    .tag { font-size: 13px; color: #E07A5F; letter-spacing: 0.12em; font-weight: 600; }
-    .caption { font-size: 14px; color: #999; line-height: 1.7; }
-    .cover-eyebrow {
-      font-size: 12px; font-weight: 700; color: #E07A5F;
-      letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 40px;
-    }
-    .cover-title {
-      font-size: 60px; font-weight: 800; color: #1a1a1a;
-      line-height: 1.1; margin-bottom: 28px; letter-spacing: -0.01em;
-    }
-    .cover-subtitle { font-size: 22px; color: #666; font-weight: 400; line-height: 1.6; }
-    .cover-deco {
-      position: absolute; right: 72px; bottom: 120px;
-      width: 280px; height: 280px; border-radius: 50%;
-      border: 1.5px solid rgba(224,122,95,0.18);
-    }
-    .cover-deco::before {
-      content: ''; position: absolute; top: 28px; left: 28px; right: 28px; bottom: 28px;
-      border-radius: 50%; border: 1px solid rgba(224,122,95,0.12);
-    }
-    .cover-deco::after {
-      content: ''; position: absolute; top: 56px; left: 56px; right: 56px; bottom: 56px;
-      border-radius: 50%; border: 1px solid rgba(224,122,95,0.08);
-    }
-    .cover-line { width: 60px; height: 2px; background: #E07A5F; margin: 32px 0; }
-    .cover-bottom { margin-top: auto; padding-top: 40px; }
-    .big-quote-mark {
-      font-size: 110px; color: #E07A5F; line-height: 0.75;
-      margin-bottom: 24px; font-family: Georgia, 'Times New Roman', serif; opacity: 0.75;
-    }
-    .big-quote-text {
-      font-size: 34px; font-weight: 700; color: #1a1a1a;
-      line-height: 1.55; margin-bottom: 20px;
-    }
-    .big-quote-sub { font-size: 20px; color: #666; line-height: 1.7; margin-bottom: 48px; }
     .note-box {
-      background: #F5F3EF; padding: 28px 32px;
-      border-radius: 6px; margin-top: 32px;
+      background: #F5F3EF; padding: 16px 18px;
+      border-radius: 6px; margin-top: 16px;
     }
-    .note-box p { font-size: 17px; color: #555; line-height: 1.85; }
+    .note-box p { font-size: 13px; color: #555; line-height: 1.8; }
     .note-box strong { color: #1a1a1a; font-weight: 600; }
-    .spacer { flex: 1; }
     .card-footer {
-      margin-top: auto; padding-top: 32px;
+      margin-top: 20px; padding-top: 16px;
       border-top: 1px solid #EBEBEB;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .card-footer .tag { font-size: 12px; }
-    .page-num { font-size: 12px; color: #CCC; letter-spacing: 0.1em; }
+    .tag { font-size: 11px; color: #E07A5F; letter-spacing: 0.08em; font-weight: 600; }
+    .page-num { font-size: 11px; color: #CCC; }
+    .cover-inner {
+      padding: 48px 28px 32px;
+      min-height: 60vh;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .cover-eyebrow {
+      font-size: 11px; font-weight: 700; color: #E07A5F;
+      letter-spacing: 0.2em; margin-bottom: 24px;
+    }
+    .cover-title {
+      font-size: 36px; font-weight: 900; color: #1a1a1a;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .cover-subtitle { font-size: 16px; color: #666; line-height: 1.6; }
+    .cover-line { width: 48px; height: 2px; background: #E07A5F; margin: 20px 0; }
+    .big-quote {
+      font-size: 20px; font-weight: 700; color: #1a1a1a;
+      line-height: 1.5; margin: 16px 0;
+    }
   </style>
 </head>
 <body>
 
-<!-- Card 1: Cover -->
-<div class="card card-cover">
-  <div class="cover-eyebrow">深度解读 · 2026.05</div>
-  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-    <div class="cover-title">Claude Opus 4.8<br>发了</div>
+<!-- Card 1: 封面 -->
+<div class="card">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">深度解读 · 2026.05</div>
+    <div class="cover-title">Claude Opus 4.8 发了</div>
     <div class="cover-line"></div>
-    <div class="cover-subtitle">这次更新真正在做什么</div>
+    <div class="cover-subtitle">41天闪电迭代，这次更新到底在做什么？<br>一个设计师的视角拆解。</div>
   </div>
-  <div class="cover-bottom">
-    <div class="tag">AI &nbsp;·&nbsp; Claude &nbsp;·&nbsp; 深度解读</div>
-  </div>
-  <div class="cover-deco"></div>
 </div>
 
 <!-- Card 2: 还债 -->
-<div class="card card-content">
-  <div class="section-num">01 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">先说还 4.7 债的部分</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    Opus 4.7 是 4 月 16 日发的，4.8 是 5 月 28 日。中间 41 天。
-    Anthropic 之前没有过这个节奏。
-  </p>
-  <p class="body-text secondary">
-    4.7 当时 Reddit 上「Opus 4.7 is not an upgrade but a serious regression」
-    拿了 2300 赞。X 上说"没比 4.6 进步"的帖子 1.4 万赞。
-    TechCrunch 直接把 4.8 快速发布归因为 "chilly reception to Opus 4.7"。
-  </p>
-  <ul class="bullet-list">
-    <li>effort 控制还给用户了（4.7 的 adaptive reasoning 被骂翻）</li>
-    <li>写代码不那么瞎自信了，会自己标出不确定的地方（官方说降 4 倍幻觉）</li>
-    <li>价格不变 $5 / $25</li>
-  </ul>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">02</span>
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">01 / 08</div>
+    <div class="section-title">先说还 4.7 债的部分</div>
+    <div class="divider"></div>
+    <p class="body-text">Opus 4.7 是 4 月 16 日发的，4.8 是 5 月 28 日，中间只有 41 天。Anthropic 之前从没有过这个发版节奏。</p>
+    <p class="body-text">为什么这么急？因为 4.7 翻车了。Reddit 上「Opus 4.7 is not an upgrade but a serious regression」拿了 2300 赞。X 上吐槽帖 1.4 万赞。TechCrunch 直接把 4.8 快速发布归因为"chilly reception to Opus 4.7"。</p>
+    <p class="body-text secondary">这次还了什么债：</p>
+    <ul class="bullet-list">
+      <li>effort 控制还给用户了——4.7 的 adaptive reasoning 被骂翻，用户觉得模型在偷懒</li>
+      <li>写代码不再瞎自信了，会主动标出不确定的地方（官方称降低 4 倍幻觉率）</li>
+      <li>价格不变 $5/$25，没趁机涨价</li>
+      <li>上下文窗口利用率提升，不再无意义复读前文</li>
+    </ul>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">02</span>
+    </div>
   </div>
 </div>
 
-<!-- Card 3: 节奏狙击 -->
-<div class="card card-content">
-  <div class="section-num">02 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">41 天发版的节奏逻辑</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，完全一样。
-    base model 没有重做预训练，迭代的是 post-training——RLHF、safety、tool-use 微调。
-  </p>
-  <div class="highlight">
-    <p>base model 复用，post-training 快速迭代——<br>
-    这才是能频繁切片发版的真正原因。</p>
-  </div>
-  <p class="body-text secondary">
-    时机刚好赶在 GPT-5.6 传言发布前。
-    芯片厂商的打法，搬到大模型行业了。
-  </p>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">03</span>
+<!-- Card 3: 发版节奏 -->
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">02 / 08</div>
+    <div class="section-title">41 天发版的节奏逻辑</div>
+    <div class="divider"></div>
+    <p class="body-text">4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，完全一样。base model 没有重做预训练，迭代的是 post-training——RLHF、safety、tool-use 微调。</p>
+    <div class="highlight">
+      <p>base model 复用，post-training 快速迭代——这才是能 41 天切一版的真正原因。不是重新训了一个模型，是在同一个底座上反复调教。</p>
+    </div>
+    <p class="body-text">时机也很微妙：刚好赶在 GPT-5.6 传言发布前。芯片厂商那套"抢先发布卡位"的打法，已经搬到大模型行业了。</p>
+    <p class="body-text secondary">对用户的启示：以后模型更新会越来越频繁，但不代表每次都是"换代"。大部分是同一个底座的调优版本。别每次都急着迁移。</p>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">03</span>
+    </div>
   </div>
 </div>
 
 <!-- Card 4: Fast Mode -->
-<div class="card card-content">
-  <div class="section-num">03 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">Fast Mode "3 倍便宜"<br>是给谁的</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    大部分报道讲错了。"3 倍便宜"是相对自家上一代 Fast Mode，
-    不是相对标准模式。Fast Mode 还是比标准模式贵 2 倍。
-  </p>
-  <p class="body-text secondary">
-    真正的客户是 API 接入的大企业。
-    微软甚至要求员工停止使用 Claude Code，因为账单肉疼。
-  </p>
-  <div class="highlight">
-    <p>对个人开发者来说，订阅档依然最划算。<br>
-    Fast Mode 降价红包不是发给我们的。</p>
-  </div>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">04</span>
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">03 / 08</div>
+    <div class="section-title">Fast Mode "3 倍便宜"<br>到底是给谁的</div>
+    <div class="divider"></div>
+    <p class="body-text">大部分报道讲错了。"3 倍便宜"是相对自家上一代 Fast Mode 的价格，不是相对标准模式。实际上 Fast Mode 依然比标准模式贵近 2 倍。</p>
+    <p class="body-text">真正的目标客户是通过 API 接入的大企业。微软内部甚至要求员工停止使用 Claude Code，因为 API 账单太肉疼了。Anthropic 降价就是为了留住这批大客户。</p>
+    <div class="highlight">
+      <p>对个人开发者来说，月度订阅档（$20 Pro / $100 Max）依然是最划算的方案。Fast Mode 降价的红包不是发给我们的，是发给企业采购的。</p>
+    </div>
+    <p class="body-text secondary">一个判断标准：如果你每月 API 花费低于 $200，订阅比按量计费划算。超过这个数再考虑 Fast Mode。</p>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">04</span>
+    </div>
   </div>
 </div>
+
 <!-- Card 5: Dynamic Workflows -->
-<div class="card card-content">
-  <div class="section-num">04 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">Dynamic Workflows<br>才是真正的大招</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    这功能没怎么被讨论，但我觉得是这次最值得关注的。
-    Claude 可以在运行时自己决定用什么工具、走什么分支。
-  </p>
-  <div class="highlight">
-    <p>不是你写好 workflow 它来跑——<br>
-    是它自己规划 workflow 然后执行。</p>
-  </div>
-  <p class="body-text secondary">
-    对设计师来说：以后你描述一个需求，它能自己决定
-    是先搜资料、再画原型、还是直接出代码。
-    不需要你手动编排 agent 流程了。
-  </p>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">05</span>
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">04 / 08</div>
+    <div class="section-title">Dynamic Workflows<br>才是这次真正的大招</div>
+    <div class="divider"></div>
+    <p class="body-text">这个功能媒体报道很少，但我认为是 4.8 最值得关注的更新。Claude 现在可以在运行时自己决定用什么工具、走什么分支、按什么顺序执行。</p>
+    <div class="highlight">
+      <p>不是你写好 workflow 它来跑——是它自己规划 workflow 然后执行。从"执行者"变成了"规划者+执行者"。</p>
+    </div>
+    <p class="body-text">对设计师来说这意味着什么？以后你描述一个需求，它能自己决定是先搜竞品资料、再画线框、还是直接生成代码。你不需要手动编排每一步 agent 流程了。</p>
+    <p class="body-text secondary">这也是为什么 Claude Code 体验进步最明显——底层就是 Dynamic Workflows 在驱动多步骤任务的规划和执行。</p>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">05</span>
+    </div>
   </div>
 </div>
 
 <!-- Card 6: Terminal-Bench -->
-<div class="card card-content">
-  <div class="section-num">05 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">Terminal-Bench 第一<br>意味着什么</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    Opus 4.8 在 Terminal-Bench 跑到第一。
-    这个 benchmark 测的是"在真实终端环境完成复杂任务"。
-  </p>
-  <ul class="bullet-list">
-    <li>不是做选择题，是真的开 shell 写代码、调试、部署</li>
-    <li>和 SWE-bench 不同，它测的是端到端多步骤能力</li>
-    <li>对 Claude Code 用户来说：体感会明显变好</li>
-  </ul>
-  <div class="note-box">
-    <p><strong>但也别太迷信。</strong>Benchmark 和真实使用之间永远有 gap。
-    4.7 的 SWE-bench 也很高，但体感被骂惨。</p>
-  </div>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">06</span>
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">05 / 08</div>
+    <div class="section-title">Terminal-Bench 第一<br>意味着什么</div>
+    <div class="divider"></div>
+    <p class="body-text">Opus 4.8 在 Terminal-Bench 登顶。这个 benchmark 和传统选择题不一样，它测的是"在真实终端环境里完成复杂多步骤任务"的能力。</p>
+    <ul class="bullet-list">
+      <li>真的开 shell、写代码、装依赖、调试报错、部署服务</li>
+      <li>和 SWE-bench 的区别：后者只改代码，Terminal-Bench 测端到端</li>
+      <li>对 Claude Code / Cursor 用户：体感会明显好于 4.7</li>
+      <li>对 agent 开发者：模型终于能可靠地串联多个工具了</li>
+    </ul>
+    <div class="note-box">
+      <p><strong>但也别太迷信 benchmark。</strong>4.7 的 SWE-bench 分数也很高，但实际体感被骂惨了。跑分和日常使用之间永远有 gap，真正的验证是你自己用一周后的感受。</p>
+    </div>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">06</span>
+    </div>
   </div>
 </div>
 
 <!-- Card 7: 设计师视角 -->
-<div class="card card-content">
-  <div class="section-num">06 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">作为设计师<br>我关注什么</div>
-  <div class="divider"></div>
-  <p class="body-text">
-    模型迭代到这个阶段，差异化不在"智商"了。
-    我日常用 AI 辅助设计，真正影响体验的是：
-  </p>
-  <ul class="bullet-list">
-    <li>指令跟随的稳定性——同一个 prompt 跑 5 次结果一致吗</li>
-    <li>工具调用的准确率——MCP 接 Figma 时不瞎调参数吗</li>
-    <li>上下文窗口的利用率——200K 不是让你复读前文的</li>
-    <li>拒绝幻觉——不确定就说不确定，别编</li>
-  </ul>
-  <div class="highlight">
-    <p>4.8 在"降幻觉"这点上有进步。<br>
-    对设计 agent 来说，这比跑分重要 10 倍。</p>
-  </div>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8</span>
-    <span class="page-num">07</span>
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">06 / 08</div>
+    <div class="section-title">作为设计师<br>我真正关注什么</div>
+    <div class="divider"></div>
+    <p class="body-text">模型迭代到这个阶段，差异化已经不在"智商"了。我日常用 AI 辅助设计工作，真正影响我体验的是这几点：</p>
+    <ul class="bullet-list">
+      <li>指令跟随的稳定性——同一个 prompt 跑 5 次，结果一致吗？不一致我就没法建立工作流</li>
+      <li>工具调用的准确率——MCP 接 Figma 的时候不瞎传参数吗？一个错误调用比不调用更浪费时间</li>
+      <li>上下文窗口的利用率——200K token 不是让你复读前文的，是让你记住项目上下文</li>
+      <li>诚实度——不确定就说不确定，别编一个看起来正确的答案骗我</li>
+    </ul>
+    <div class="highlight">
+      <p>4.8 在"降幻觉"这点上有实质进步。对于做设计 agent 的人来说，模型的诚实度比跑分重要 10 倍。一个会说"我不确定"的模型，比一个"自信地编"的模型有用得多。</p>
+    </div>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8</span>
+      <span class="page-num">07</span>
+    </div>
   </div>
 </div>
 
-<!-- Card 8: 结尾 -->
-<div class="card card-content">
-  <div class="section-num">07 &nbsp;/&nbsp; 08</div>
-  <div class="section-title">总结</div>
-  <div class="divider"></div>
-  <div class="big-quote-mark">"</div>
-  <div class="big-quote-text">
-    4.8 不是革命，是补课。<br>
-    但补课的速度和方向都对了。
-  </div>
-  <div class="big-quote-sub">
-    41 天一个版本、benchmark 登顶、Dynamic Workflows 开放——
-    Anthropic 在用行动回应 4.7 的差评。
-    作为用户，这种"被听到"的感觉比任何跑分都实在。
-  </div>
-  <div class="note-box">
-    <p>下次更新估计 7 月中。到时候再来拆。<br>
-    觉得有用的话点个赞，我继续写这类深度拆解。</p>
-  </div>
-  <div class="spacer"></div>
-  <div class="card-footer">
-    <span class="tag">Claude Opus 4.8 · 深度解读</span>
-    <span class="page-num">08</span>
+<!-- Card 8: 总结 -->
+<div class="card">
+  <div class="card-inner">
+    <div class="section-num">07 / 08</div>
+    <div class="section-title">总结：不是革命，是补课</div>
+    <div class="divider"></div>
+    <p class="big-quote">4.8 不是革命，是补课。但补课的速度和方向都对了。</p>
+    <p class="body-text">41 天一个版本、Terminal-Bench 登顶、Dynamic Workflows 开放——Anthropic 在用行动回应 4.7 的差评。</p>
+    <p class="body-text">作为用户，这种"反馈被听到、然后快速修正"的感觉，比任何 benchmark 数字都让人安心。这才是一个产品团队该有的迭代态度。</p>
+    <div class="note-box">
+      <p>预计下次更新 7 月中旬左右。到时候再来拆。<br><br>
+      如果觉得这种深度拆解有帮助，点个赞让我知道，我会继续写。关注不迷路，下次更新第一时间拆给你看。</p>
+    </div>
+    <div class="card-footer">
+      <span class="tag">Claude Opus 4.8 · 深度解读</span>
+      <span class="page-num">08</span>
+    </div>
   </div>
 </div>
 
