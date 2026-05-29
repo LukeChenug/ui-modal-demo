@@ -292,7 +292,7 @@
   <!-- 左侧竖线装饰 -->
   <div style="position:absolute; left:80px; top:180px; bottom:180px; width:3px; background:linear-gradient(to bottom, transparent, rgba(224,122,95,0.6), transparent);"></div>
 
-  <div class="kicker" style="color:rgba(248,244,237,0.5); position:relative; z-index:2;">2026.05 · 深度解读</div>
+  <div class="kicker" style="color:rgba(248,244,237,0.5); position:relative; z-index:2;">2026.05 · 设计师随手聊</div>
 
   <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 0 40px; position:relative; z-index:2;">
     <!-- 小标签 -->
@@ -315,7 +315,7 @@
   </div>
 
   <div class="card-footer" style="border-top-color:rgba(248,244,237,0.12); color:rgba(248,244,237,0.4);">
-    <span>深度解读 · 设计师视角</span>
+    <span>随手聊 · 设计师视角</span>
     <span>01 / 06</span>
   </div>
 </div>
@@ -324,32 +324,32 @@
      第2张：41天发版，本质是还债
 ══════════════════════════════════════ -->
 <div class="card" id="card-2">
-  <div class="kicker">02 · 核心观点</div>
-  <h2 class="card-title">41天发版，<br>本质是还债</h2>
+  <div class="kicker">02 · 说说这次更新</div>
+  <h2 class="card-title">4.7被骂惨了，<br>41天就出4.8</h2>
   <p style="margin-top: 20px; font-size: 26px; color: var(--ink-2); line-height: 1.7;">
-    4.7 发布后口碑急转直下。4.8 是一次快速的 post-training 修复，不是新模型。
+    说实话这个发版速度挺离谱的，明显是来补锅的。说说补了什么。
   </p>
 
   <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
       <div class="ledger-body">
-        <p class="ledger-main">4.7 被骂翻了</p>
-        <p class="ledger-sub">Reddit 上一条吐槽 regression 的帖子获得 2300 赞，这在 AI 社区里算是相当罕见的集体差评。</p>
+        <p class="ledger-main">Reddit上骂声一片</p>
+        <p class="ledger-sub">有条吐槽帖拿了2300赞，说4.7是serious regression。这在AI社区里挺少见的，大家平时都挺捧场的。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
       <div class="ledger-body">
-        <p class="ledger-main">base model 没有重训</p>
-        <p class="ledger-sub">只是 post-training 快速调优。这意味着底层能力没变，改的是行为对齐和指令跟随。</p>
+        <p class="ledger-main">底层没动，只改了行为</p>
+        <p class="ledger-sub">base model没有重训，就是post-training快速调了一下。所以才能41天出版，换我也这么干。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
       <div class="ledger-body">
-        <p class="ledger-main">三个关键修复</p>
-        <p class="ledger-sub">effort 控制回归修复、幻觉率降低约 4 倍、价格维持不变。这是一次有针对性的补丁，不是全面升级。</p>
+        <p class="ledger-main">补了三个主要的坑</p>
+        <p class="ledger-sub">effort控制还给用户了、幻觉率降了大概4倍、价格没变。说白了就是把4.7搞坏的东西修回来了。</p>
       </div>
     </div>
   </div>
@@ -364,14 +364,14 @@
      第3张：Fast Mode 降价不是给你的
 ══════════════════════════════════════ -->
 <div class="card" id="card-3">
-  <div class="kicker">03 · 数据对比</div>
-  <h2 class="card-title">Fast Mode 降价<br>不是给你的</h2>
+  <div class="kicker">03 · 说说降价这件事</div>
+  <h2 class="card-title">Fast Mode降价，<br>跟咱关系不大</h2>
 
   <div class="compare-grid">
     <div class="compare-block dark">
-      <p class="compare-label">目标客户 · 企业</p>
-      <p class="compare-title">API 调用降价 3 倍</p>
-      <p class="compare-desc">大规模 API 调用的企业客户，这次是真正的受益者。批量任务成本直接砍掉三分之二。</p>
+      <p class="compare-label">目标客户 · 大企业</p>
+      <p class="compare-title">API调用降了3倍</p>
+      <p class="compare-desc">大规模调用的企业才是真正受益的。批量任务成本直接砍掉三分之二，对他们来说很实在。</p>
     </div>
     <div class="compare-block light">
       <p class="compare-label">个人开发者</p>
@@ -379,7 +379,7 @@
       <p class="compare-desc">$20 / $100 订阅档的用量上限对个人来说已经够用。按量计费反而不如订阅合算。</p>
     </div>
     <div class="compare-note">
-      <strong>值得注意：</strong>微软内部要求员工停用 Claude Code，原因是账单失控。这说明 Fast Mode 的成本对高频使用场景仍然不低。
+      听说微软内部让员工停用 Claude Code 了，原因就是账单太离谱。所以这次降价主要是留住企业客户的，跟我们个人用户关系不大。
     </div>
   </div>
 
@@ -393,32 +393,32 @@
      第4张：Dynamic Workflows 才是真正的大招
 ══════════════════════════════════════ -->
 <div class="card" id="card-4">
-  <div class="kicker">04 · 最被低估的更新</div>
-  <h2 class="card-title">Dynamic Workflows<br>才是真正的大招</h2>
+  <div class="kicker">04 · 我觉得最值得聊的</div>
+  <h2 class="card-title">Dynamic Workflows<br>没什么人提，但很猛</h2>
   <p style="margin-top: 20px; font-size: 26px; color: var(--ink-2); line-height: 1.7;">
-    这个功能几乎没有被主流媒体重点报道，但它可能是 4.8 里影响最深远的一项。
+    媒体都在写降价和跑分，但我觉得这个功能才是真正改变使用方式的。
   </p>
 
   <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
       <div class="ledger-body">
-        <p class="ledger-main">不是你写 workflow，是它自己规划</p>
-        <p class="ledger-sub">传统 AI 工作流是人设计好步骤，AI 来执行。Dynamic Workflows 反过来：你描述目标，AI 自己拆解任务并执行。</p>
+        <p class="ledger-main">它自己规划怎么干活了</p>
+        <p class="ledger-sub">以前是你设计好步骤让它跑。现在你说个目标，它自己拆任务、选工具、决定顺序。有点像你给实习生说"把这个搞定"，它自己想办法。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
       <div class="ledger-body">
-        <p class="ledger-main">Bun 用它完成了一次大迁移</p>
-        <p class="ledger-sub">11 天内，75 万行 Zig 代码迁移到 Rust。这不是辅助编程，是 AI 主导的大规模工程任务。</p>
+        <p class="ledger-main">Bun 拿它迁了 75 万行代码</p>
+        <p class="ledger-sub">11天，Zig 迁到 Rust。虽然 13000 个 unsafe block 有争议，但这个量级已经不是"辅助编程"了，是 AI 主导干活。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
       <div class="ledger-body">
-        <p class="ledger-main">未来的工作方式</p>
-        <p class="ledger-sub">描述需求 → AI 自己拆解 → 并行执行 → 交付结果。这个链路一旦稳定，很多中间层的工作会被重新定义。</p>
+        <p class="ledger-main">对设计师意味着什么</p>
+        <p class="ledger-sub">以后你描述一个需求，它自己决定先搜资料还是先画原型还是直接出代码。不用你手动编排流程了，省心很多。</p>
       </div>
     </div>
   </div>
@@ -433,36 +433,36 @@
      第5张：作为设计师我关注什么
 ══════════════════════════════════════ -->
 <div class="card" id="card-5">
-  <div class="kicker">05 · 设计师视角</div>
-  <h2 class="card-title">作为设计师<br>我关注什么</h2>
+  <div class="kicker">05 · 个人感受</div>
+  <h2 class="card-title">日常用下来<br>我在意这几点</h2>
 
   <div class="ledger">
     <div class="ledger-row">
       <span class="ledger-idx">01</span>
       <div class="ledger-body">
-        <p class="ledger-main">指令跟随稳定性 &gt; 跑分</p>
-        <p class="ledger-sub">基准测试好看没用。我更在意：同一个指令，今天和明天的输出是不是一致的。</p>
+        <p class="ledger-main">同一个指令跑5次，结果一样吗</p>
+        <p class="ledger-sub">跑分高没用，我要的是稳定。今天能用的 prompt 明天不能用了，工作流就废了。这个比什么都重要。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">02</span>
       <div class="ledger-body">
-        <p class="ledger-main">工具调用准确率</p>
-        <p class="ledger-sub">MCP 接 Figma 的时候，别瞎传参数。工具调用出错比没有工具更糟糕，因为你以为它做了，其实没做。</p>
+        <p class="ledger-main">接 Figma 的时候别瞎传参数</p>
+        <p class="ledger-sub">MCP 工具调用出错比没有工具更烦。你以为它帮你改了，结果改错了，还得回去查。浪费双倍时间。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">03</span>
       <div class="ledger-body">
-        <p class="ledger-main">诚实度比智商重要</p>
-        <p class="ledger-sub">会说"我不确定"的模型比一本正经胡说八道的模型有用得多。4.8 在这方面有实质进步。</p>
+        <p class="ledger-main">不确定就说不确定</p>
+        <p class="ledger-sub">4.8 在这点上确实好了一些。以前它会一本正经编答案，现在会标出来哪里不确定。对我来说这比"更聪明"有用。</p>
       </div>
     </div>
     <div class="ledger-row">
       <span class="ledger-idx">04</span>
       <div class="ledger-body">
-        <p class="ledger-main">幻觉降低是真实改善</p>
-        <p class="ledger-sub">降幻觉 4 倍这个数字，在日常使用里能感受到。尤其是长上下文任务，编造细节的情况明显减少了。</p>
+        <p class="ledger-main">长上下文不要复读前文</p>
+        <p class="ledger-sub">200K 的窗口是让你记住项目背景的，不是让你每次都把前面说过的话重复一遍。这个 4.8 也有改善。</p>
       </div>
     </div>
   </div>
@@ -488,13 +488,13 @@
 
   <div class="pull-area" style="position:relative; z-index:2;">
     <div class="quote-mark" style="color:rgba(224,122,95,0.5); font-size:120px;">"</div>
-    <p class="quote-text" style="color:#f8f4ed; font-size:58px; line-height:1.45;">4.8 不是革命，<br>是补课。<br><span style="color:#E07A5F;">但补课的速度<br>和方向都对了。</span></p>
+    <p class="quote-text" style="color:#f8f4ed; font-size:58px; line-height:1.45;">4.8 不是革命，<br>是补课。<br><span style="color:#E07A5F;">但补的挺快，<br>方向也对。</span></p>
     <!-- 分隔 -->
     <div style="margin-top:56px; display:flex; align-items:center; gap:16px;">
       <div style="width:40px; height:2px; background:#E07A5F;"></div>
-      <span style="font-size:20px; color:rgba(248,244,237,0.4); letter-spacing:0.08em;">THE TAKEAWAY</span>
+      <span style="font-size:20px; color:rgba(248,244,237,0.4); letter-spacing:0.08em;">总结</span>
     </div>
-    <p class="quote-cta" style="color:rgba(248,244,237,0.6); margin-top:32px; font-size:26px; line-height:1.7;">41天一版 · Terminal-Bench 登顶 · Dynamic Workflows<br>Anthropic 在用行动回应差评。<br><br>觉得有用点个赞，下次更新继续拆。</p>
+    <p class="quote-cta" style="color:rgba(248,244,237,0.6); margin-top:32px; font-size:26px; line-height:1.7;">41天一版，说明他们确实在听用户反馈。<br>这种态度比跑分让人安心。<br><br>觉得有用点个赞，下次更新继续拆 👋</p>
   </div>
 
   <div class="card-footer" style="border-top-color:rgba(248,244,237,0.1); color:rgba(248,244,237,0.35); position:relative; z-index:2;">
@@ -508,38 +508,37 @@
 ══════════════════════════════════════ -->
 <div class="article-wrap">
   <div class="article">
-    <h1>Claude Opus 4.8 发了，这次更新真正在做什么</h1>
-    <p class="article-meta">2026.05 · 深度解读 · 设计师视角</p>
+    <h1>Claude Opus 4.8 发了，聊聊这次更新</h1>
+    <p class="article-meta">2026.05 · 随手聊 · 设计师视角</p>
 
-    <h2>一、41天发版，本质是还债</h2>
-    <p>Opus 4.7 是 4 月 16 日发的，4.8 是 5 月 28 日，中间只有 41 天。Anthropic 之前从没有过这个发版节奏。</p>
-    <p>为什么这么急？因为 4.7 翻车了。Reddit 上「Opus 4.7 is not an upgrade but a serious regression」拿了 2300 赞。X 上吐槽帖 1.4 万赞。TechCrunch 直接把 4.8 快速发布归因为 "chilly reception to Opus 4.7"。</p>
-    <p>4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，完全一样。base model 没有重做预训练，迭代的是 post-training——RLHF、safety、tool-use 微调。这才是能 41 天切一版的真正原因。</p>
-    <p>这次还了什么债：effort 控制还给用户了（4.7 的 adaptive reasoning 被骂翻）；写代码不再瞎自信，会主动标出不确定的地方（官方称降低 4 倍幻觉率）；价格不变 $5/$25。</p>
+    <h2>一、41天出新版，明显是来补锅的</h2>
+    <p>4.7 是 4 月 16 号发的，4.8 是 5 月 28 号，中间就 41 天。Anthropic 之前没有过这个节奏。</p>
+    <p>为什么这么急？因为 4.7 被骂惨了。Reddit 上有条帖子标题直接写「Opus 4.7 is not an upgrade but a serious regression」，拿了 2300 赞。X 上类似的吐槽也有 1.4 万赞。TechCrunch 后来写 4.8 的时候直接说是因为 "chilly reception to Opus 4.7"。</p>
+    <p>看了一下，4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，一模一样。base model 没重训，改的是 post-training 那层——RLHF、safety、tool-use 微调。所以才能这么快出版，不是重新训了个模型。</p>
+    <p>补了什么：effort 控制还给用户了（4.7 那个 adaptive reasoning 真的离谱，模型自己决定用多少力气想问题）；写代码不瞎编了，会标出不确定的地方，官方说幻觉降了 4 倍；价格没变 $5/$25。</p>
 
-    <h2>二、Fast Mode 降价不是给你的</h2>
-    <p>大部分报道讲错了。"3 倍便宜"是相对自家上一代 Fast Mode 的价格，不是相对标准模式。实际上 Fast Mode 依然比标准模式贵近 2 倍。</p>
-    <p>真正的目标客户是通过 API 接入的大企业。微软内部甚至要求员工停止使用 Claude Code，因为 API 账单太肉疼了。Anthropic 降价就是为了留住这批大客户。</p>
-    <p>对个人开发者来说，月度订阅档（$20 Pro / $100 Max）依然是最划算的方案。如果你每月 API 花费低于 $200，订阅比按量计费划算。</p>
+    <h2>二、Fast Mode 降价，跟咱关系不大</h2>
+    <p>很多报道说"便宜了3倍"，但仔细看是相对自家上一代 Fast Mode 的价格，不是相对标准模式。Fast Mode 本身还是比标准模式贵。</p>
+    <p>这个降价主要是给大企业的。听说微软内部让员工停用 Claude Code 了，原因就是账单太离谱。Anthropic 降价就是为了留住这批大客户。</p>
+    <p>对我们个人来说，$20 Pro 或 $100 Max 的订阅档够用了。每月 API 花费低于 $200 的话，订阅比按量计费划算。</p>
 
-    <h2>三、Dynamic Workflows 才是真正的大招</h2>
-    <p>这个功能媒体报道很少，但我认为是 4.8 最值得关注的更新。Claude 现在可以在运行时自己决定用什么工具、走什么分支、按什么顺序执行。</p>
-    <p>不是你写好 workflow 它来跑——是它自己规划 workflow 然后执行。从"执行者"变成了"规划者+执行者"。</p>
-    <p>Bun 团队用 Dynamic Workflows 在 11 天内把 75 万行 Zig 代码迁移到 Rust。13000 个 unsafe block 有争议，但这个量级已经说明问题了。</p>
-    <p>对设计师来说：以后你描述一个需求，它能自己决定是先搜竞品资料、再画线框、还是直接生成代码。不需要手动编排每一步 agent 流程了。</p>
+    <h2>三、Dynamic Workflows，我觉得最值得关注</h2>
+    <p>这个功能媒体报道很少，但我觉得是这次最猛的更新。简单说就是：以前你设计好步骤让 AI 跑，现在你说个目标，它自己拆任务、选工具、决定顺序。</p>
+    <p>Bun 团队拿它在 11 天内把 75 万行 Zig 代码迁到了 Rust。虽然 13000 个 unsafe block 有争议，但这个量级已经不是"辅助编程"了。</p>
+    <p>对设计师来说：以后你描述一个需求，它自己决定先搜资料还是先画原型还是直接出代码。不用手动编排流程了，省心很多。</p>
 
-    <h2>四、作为设计师我关注什么</h2>
-    <p>模型迭代到这个阶段，差异化已经不在"智商"了。我日常用 AI 辅助设计工作，真正影响体验的是：</p>
+    <h2>四、日常用下来我在意什么</h2>
+    <p>到这个阶段，模型之间的差异已经不在"智商"了。我日常用 AI 辅助设计，真正影响体验的是：</p>
     <ul>
-      <li>指令跟随的稳定性——同一个 prompt 跑 5 次，结果一致吗？不一致我就没法建立工作流</li>
-      <li>工具调用的准确率——MCP 接 Figma 的时候不瞎传参数吗？一个错误调用比不调用更浪费时间</li>
-      <li>上下文窗口的利用率——200K token 不是让你复读前文的，是让你记住项目上下文</li>
-      <li>诚实度——不确定就说不确定，别编一个看起来正确的答案骗我</li>
+      <li>指令跟随稳定不稳定——同一个 prompt 跑 5 次结果一样吗？不一样我工作流就废了</li>
+      <li>工具调用准不准——MCP 接 Figma 的时候别瞎传参数，改错了比不改更烦</li>
+      <li>上下文窗口别浪费——200K 是让你记住项目背景的，不是让你复读前文的</li>
+      <li>不确定就说不确定——别编一个看起来对的答案骗我</li>
     </ul>
-    <p>4.8 在"降幻觉"这点上有实质进步。对于做设计 agent 的人来说，模型的诚实度比跑分重要 10 倍。</p>
+    <p>4.8 在"不瞎编"这点上确实好了一些。对我来说这比"更聪明"有用。</p>
 
     <hr>
-    <p class="closing">4.8 不是革命，是补课。但补课的速度和方向都对了。41 天一个版本、Terminal-Bench 登顶、Dynamic Workflows 开放——Anthropic 在用行动回应 4.7 的差评。作为用户，这种"反馈被听到、然后快速修正"的感觉，比任何 benchmark 数字都让人安心。</p>
+    <p class="closing">总的来说，4.8 不是什么大革命，就是把 4.7 搞坏的东西修回来了，顺便加了 Dynamic Workflows。但 41 天就出修复版，说明他们确实在听反馈。这种态度比跑分让人安心。</p>
   </div>
 </div>
 
