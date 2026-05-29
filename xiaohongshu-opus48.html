@@ -280,20 +280,41 @@
 <!-- ══════════════════════════════════════
      第1张：封面
 ══════════════════════════════════════ -->
-<div class="card" id="card-1">
-  <div class="kicker">2026.05 · 深度解读</div>
+<div class="card" id="card-1" style="background: #1c1c1c; color: #f8f4ed; overflow: hidden;">
+  <!-- 背景装饰：大圆环 + 网格 -->
+  <div style="position:absolute; top:-120px; right:-180px; width:720px; height:720px; border-radius:50%; border:1.5px solid rgba(248,244,237,0.08);"></div>
+  <div style="position:absolute; top:-60px; right:-120px; width:560px; height:560px; border-radius:50%; border:1px solid rgba(248,244,237,0.05);"></div>
+  <div style="position:absolute; bottom:-200px; left:-100px; width:500px; height:500px; border-radius:50%; border:1.5px solid rgba(248,244,237,0.06);"></div>
+  <!-- 网格点阵 -->
+  <div style="position:absolute; inset:0; opacity:0.04; background-image:radial-gradient(rgba(248,244,237,0.8) 1px, transparent 1px); background-size:32px 32px;"></div>
+  <!-- 大数字装饰 -->
+  <div style="position:absolute; right:60px; top:50%; transform:translateY(-50%); font-size:420px; font-weight:200; line-height:0.85; letter-spacing:-0.05em; color:rgba(248,244,237,0.06); font-family:'Inter',sans-serif; pointer-events:none; user-select:none;">4.8</div>
+  <!-- 左侧竖线装饰 -->
+  <div style="position:absolute; left:80px; top:180px; bottom:180px; width:3px; background:linear-gradient(to bottom, transparent, rgba(224,122,95,0.6), transparent);"></div>
 
-  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 0 40px;">
-    <h1 class="card-title-xl">Claude Opus<br>4.8 发了</h1>
-    <p class="card-subtitle" style="margin-top: 32px;">41天闪电迭代，这次在做什么</p>
-    <div style="margin-top: 56px; width: 64px; height: 3px; background: var(--ink);"></div>
-    <p style="margin-top: 32px; font-size: 26px; color: var(--ink-2); line-height: 1.7;">
-      从 4.7 的口碑崩塌，到 4.8 的快速修复。<br>
-      这 41 天发生了什么，值得认真拆一遍。
-    </p>
+  <div class="kicker" style="color:rgba(248,244,237,0.5); position:relative; z-index:2;">2026.05 · 深度解读</div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 0 40px; position:relative; z-index:2;">
+    <!-- 小标签 -->
+    <div style="display:inline-flex; align-items:center; gap:8px; margin-bottom:28px;">
+      <div style="width:8px; height:8px; border-radius:50%; background:#E07A5F;"></div>
+      <span style="font-size:18px; letter-spacing:0.12em; color:rgba(248,244,237,0.5);">ANTHROPIC</span>
+    </div>
+    <h1 class="card-title-xl" style="color:#f8f4ed;">Claude Opus<br>4.8 发了</h1>
+    <div style="margin-top:40px; display:flex; gap:16px; align-items:center;">
+      <div style="width:48px; height:3px; background:#E07A5F;"></div>
+      <p style="font-size:28px; color:rgba(248,244,237,0.7);">41天闪电迭代</p>
+    </div>
+    <!-- 关键词标签组 -->
+    <div style="margin-top:48px; display:flex; flex-wrap:wrap; gap:12px;">
+      <span style="padding:10px 20px; border:1px solid rgba(248,244,237,0.15); font-size:20px; color:rgba(248,244,237,0.6); border-radius:4px;">还债修复</span>
+      <span style="padding:10px 20px; border:1px solid rgba(248,244,237,0.15); font-size:20px; color:rgba(248,244,237,0.6); border-radius:4px;">幻觉↓4×</span>
+      <span style="padding:10px 20px; border:1px solid rgba(248,244,237,0.15); font-size:20px; color:rgba(248,244,237,0.6); border-radius:4px;">Dynamic Workflows</span>
+      <span style="padding:10px 20px; background:rgba(224,122,95,0.15); border:1px solid rgba(224,122,95,0.3); font-size:20px; color:#E07A5F; border-radius:4px;">Fast Mode 降价</span>
+    </div>
   </div>
 
-  <div class="card-footer">
+  <div class="card-footer" style="border-top-color:rgba(248,244,237,0.12); color:rgba(248,244,237,0.4);">
     <span>深度解读 · 设计师视角</span>
     <span>01 / 06</span>
   </div>
