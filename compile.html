@@ -474,58 +474,71 @@
     paths.push({ el:p, lay:lay, cfg:Lj });
   }
 
-  // --- Intro animation: phase eases from (delta + amount) -> delta ---------
-  // (and rotation eases similarly for P and L). Matches the site's "intro".
-  var start = null;
-  function frame(now){
-    if (start === null) start = now;
-    var elapsed = (now - start) / 1000;
-    var stillAnimating = false;
+  // --- Single persistent animation loop (intro + hover, no stacking) -------
+  // Per-letter state: intro offset decays amount->0; hover offset lerps to a
+  // target. The loop reads state and rebuilds each path only when its phase
+  // actually changed. Previous bug: each mouseenter spawned its own rAF loop,
+  // so overlapping thin strokes fired dozens of loops that fought each other.
+  var t0 = performance.now();
+  var HOVER_AMP = Math.PI / 2.5;   // how far a hovered letter nudges its phase
+  var LERP = 0.14;                 // hover smoothing per frame
+  var running = false;
+
+  var state = [];
+  for (var s=0; s<7; s++){
+    state.push({ hoverTarget:0, hoverCur:0, lastPhase:NaN });
+  }
+
+  function introOffset(cfg, elapsed){
+    var ph = cfg.intro && cfg.intro.phase;
+    if (!ph) return 0;
+    var t = (elapsed - (ph.delay||0)) / ph.duration;
+    if (t <= 0) return ph.amount;          // not started: hold full amount
+    if (t >= 1) return 0;                  // finished: settled
+    return ph.amount * (1 - easeInOut(t)); // easing amount -> 0
+  }
+
+  function loop(now){
+    var elapsed = (now - t0) / 1000;
+    var busy = false;
 
     for (var k=0; k<7; k++){
-      var cfg = paths[k].cfg, lay = paths[k].lay;
-      var ph = cfg.intro && cfg.intro.phase;
-      var delta = cfg.delta;
+      var cfg = paths[k].cfg, lay = paths[k].lay, st = state[k];
 
-      if (ph){
-        var t = (elapsed - (ph.delay||0)) / ph.duration;
-        if (t < 1) stillAnimating = true;
-        t = Math.max(0, Math.min(1, t));
-        var e = easeInOut(t);
-        // phase travels its full "amount" then settles to the configured delta
-        delta = cfg.delta + ph.amount * (1 - e);
+      var intro = introOffset(cfg, elapsed);
+      if (intro !== 0) busy = true;
+
+      // smooth approach toward hover target (no stacking, no jitter)
+      st.hoverCur += (st.hoverTarget - st.hoverCur) * LERP;
+      if (Math.abs(st.hoverTarget - st.hoverCur) > 0.0005) busy = true;
+      else st.hoverCur = st.hoverTarget;
+
+      var phase = cfg.delta + intro + st.hoverCur;
+
+      // only touch the DOM when the phase meaningfully changed
+      if (isNaN(st.lastPhase) || Math.abs(phase - st.lastPhase) > 0.0008){
+        paths[k].el.setAttribute('d',
+          buildPath(cfg.a, cfg.b, phase, RES, lay.width, CELL, lay.scaleX, lay.scaleY));
+        st.lastPhase = phase;
       }
-
-      var d = buildPath(cfg.a, cfg.b, delta, RES, lay.width, CELL, lay.scaleX, lay.scaleY);
-      paths[k].el.setAttribute('d', d);
     }
-    if (stillAnimating) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
 
-  // --- Gentle hover wobble per letter (re-plays a small phase nudge) -------
+    if (busy){ requestAnimationFrame(loop); }
+    else { running = false; }   // settle: stop the loop until next interaction
+  }
+
+  function kick(){
+    if (!running){ running = true; requestAnimationFrame(loop); }
+  }
+  kick();  // run the intro
+
+  // Hover just flips a target; the single loop eases there smoothly.
   for (var h=0; h<7; h++){
     (function(idx){
       var g = svg.children[idx];
       g.style.cursor = 'pointer';
-      g.addEventListener('mouseenter', function(){
-        var t0 = performance.now();
-        function wob(now){
-          var p = (now - t0) / 600;
-          if (p >= 1){
-            var cfg = paths[idx].cfg, lay = paths[idx].lay;
-            paths[idx].el.setAttribute('d',
-              buildPath(cfg.a, cfg.b, cfg.delta, RES, lay.width, CELL, lay.scaleX, lay.scaleY));
-            return;
-          }
-          var cfg2 = paths[idx].cfg, lay2 = paths[idx].lay;
-          var nudge = Math.sin(p*Math.PI) * (Math.PI/3);
-          paths[idx].el.setAttribute('d',
-            buildPath(cfg2.a, cfg2.b, cfg2.delta + nudge, RES, lay2.width, CELL, lay2.scaleX, lay2.scaleY));
-          requestAnimationFrame(wob);
-        }
-        requestAnimationFrame(wob);
-      });
+      g.addEventListener('mouseenter', function(){ state[idx].hoverTarget = HOVER_AMP; kick(); });
+      g.addEventListener('mouseleave', function(){ state[idx].hoverTarget = 0;        kick(); });
     })(h);
   }
 })();
