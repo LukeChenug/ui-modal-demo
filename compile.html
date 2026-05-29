@@ -465,9 +465,19 @@
     p.setAttribute('stroke-width', '4');
     p.setAttribute('stroke-linecap', 'round');
     p.setAttribute('stroke-linejoin', 'round');
+    p.setAttribute('pointer-events', 'none'); // the moving stroke never catches hover
     // path is built around local origin: shift by -w/2,-h/2 via inner translate
     var inner = document.createElementNS(SVGNS, 'g');
     inner.setAttribute('transform', 'translate(' + (-lay.width/2) + ',' + (-CELL/2) + ')');
+    // STATIC hit area: a transparent rect over the whole cell. It does NOT move
+    // when the curve deforms, so hover detection can't feed back into the
+    // animation (the bug: a moving thin stroke slipped out from under the
+    // pointer, firing endless mouseleave/mouseenter -> jitter).
+    var hit = document.createElementNS(SVGNS, 'rect');
+    hit.setAttribute('x', '0'); hit.setAttribute('y', '0');
+    hit.setAttribute('width', lay.width); hit.setAttribute('height', CELL);
+    hit.setAttribute('fill', 'transparent');
+    inner.appendChild(hit);
     inner.appendChild(p);
     g.appendChild(inner);
     svg.appendChild(g);
