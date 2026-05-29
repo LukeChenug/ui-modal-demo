@@ -38,10 +38,12 @@
   .hero-canvas-wrap{
     width:100%;
   }
-  #hero-canvas{
+  #hero-svg{
     display:block;
     width:100%;
-    height:260px;
+    height:auto;
+    overflow:visible;
+    color:var(--ink); /* drives the "currentColor" letter (I) */
   }
   .caption-row{
     display:flex;
@@ -217,13 +219,11 @@
     .intro{grid-template-columns:1fr;gap:36px;}
     .speakers-grid{grid-template-columns:repeat(2,1fr);}
     .form-grid{grid-template-columns:1fr;}
-    #hero-canvas{height:180px;}
     .gap-xl{height:72px;}
     .section h2{font-size:25px;}
     .intro .col1{font-size:20px;}
   }
   @media (max-width:480px){
-    #hero-canvas{height:140px;}
     .speakers-grid{grid-template-columns:1fr;}
     .caption-row{font-size:13px;}
   }
@@ -235,7 +235,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero-canvas-wrap">
-        <canvas id="hero-canvas" aria-label="Animated Lissajous curves spelling COMPILE"></canvas>
+        <svg id="hero-svg" role="img" aria-label="Animated Lissajous curves spelling COMPILE"></svg>
       </div>
       <div class="caption-row">
         <span class="left">An event by Cursor</span>
@@ -383,79 +383,151 @@
   </footer>
 
 <script>
+/* ============================================================================
+   COMPILE Lissajous logo — faithful reimplementation of cursor.com/compile.
+   The 7 letter configs, the path-builder, the cell layout and the intro
+   phase animation are ported 1:1 from the real site's source.
+   Each glyph is a Lissajous curve  x = sin(a·t + δ),  y = sin(b·t).
+   ========================================================================== */
 (function(){
-  var canvas = document.getElementById('hero-canvas');
-  var ctx = canvas.getContext('2d');
-
-  // One Lissajous glyph per letter of COMPILE.
-  var glyphs = [
-    { color:'#E8632A', a:3, b:2, speed:0.0100 }, // C
-    { color:'#4F9D69', a:2, b:2, speed:0.0065 }, // O (near-circle)
-    { color:'#B8A23E', a:3, b:4, speed:0.0130 }, // M
-    { color:'#8E8FD6', a:4, b:3, speed:0.0088 }, // P
-    { color:'#1A1A1A', a:1, b:1, speed:0.0055 }, // I (simplest)
-    { color:'#6B4A2F', a:2, b:3, speed:0.0115 }, // L
-    { color:'#3B6FC4', a:4, b:5, speed:0.0078 }  // E
-  ];
-  // Give each its own starting phase so they're out of sync.
-  for (var i=0; i<glyphs.length; i++){ glyphs[i].delta = i * 0.8; }
-
-  var W = 0, H = 0, dpr = 1;
-  var SAMPLES = 600;
   var TWO_PI = Math.PI * 2;
 
-  function resize(){
-    dpr = window.devicePixelRatio || 1;
-    var rect = canvas.getBoundingClientRect();
-    W = rect.width;
-    H = rect.height;
-    canvas.width  = Math.max(1, Math.round(W * dpr));
-    canvas.height = Math.max(1, Math.round(H * dpr));
-    // Work in CSS pixels; the transform handles crispness for retina.
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+  // --- Real per-letter configs (C O M P I L E), verbatim from the site ----
+  var LETTERS = [
+    { a:2, b:1, delta:Math.PI/0.3, rotation:0,    stroke:'#F76D18',                                   intro:{ phase:{amount:Math.PI,        duration:1.8, delay:0   } } }, // C
+    { a:1, b:1, delta:Math.PI/0.3, rotation:0,    stroke:'#2C9F28',  gapBefore:-85,                    intro:{ phase:{amount:Math.PI,        duration:2.0, delay:0.1 } } }, // O
+    { a:1, b:2, delta:0,           rotation:0,    stroke:'#A88D02',  gapBefore:-50,                    intro:{ phase:{amount:Math.PI/1.5,    duration:2.2, delay:0.2 } } }, // M
+    { a:2, b:3, delta:Math.PI/2,   rotation:-15,  stroke:'#8C89E7',  gapBefore:-40, scaleX:1, offsetY:-10,
+      intro:{ phase:{amount:Math.PI, duration:2.0, delay:0.3}, rotation:{amount:-30, duration:2.0, delay:0.3} } },               // P
+    { a:1, b:1, delta:Math.PI,     rotation:0,    stroke:'currentColor', gapBefore:-120,               intro:{ phase:{amount:Math.PI,        duration:1.6, delay:0.4 } } }, // I
+    { a:1, b:2, delta:Math.PI/3.05,rotation:-120, stroke:'#916031',  gapBefore:-100, scale:0.9, offsetY:24,
+      intro:{ phase:{amount:Math.PI/4, duration:2.0, delay:0.5}, rotation:{amount:-20, duration:2.0, delay:0.5} } },             // L
+    { a:3, b:1, delta:Math.PI/2,   rotation:0,    stroke:'#2268FF',  gapBefore:-60,                    intro:{ phase:{amount:Math.PI,        duration:2.0, delay:0.6 } } }  // E
+  ];
 
-  function draw(){
-    ctx.clearRect(0, 0, W, H);
+  var CELL = 200;        // cellSize H — real default
+  var GAP  = 8;          // gap W — real default
+  var RES  = 500;        // resolution X — real default
+  var easeInOut = function(e){ return e < 0.5 ? 2*e*e : 1 - Math.pow(-2*e+2,2)/2; };
 
-    var cellW = W / 7;
-    var padX = cellW * 0.20;
-    var padY = H * 0.16;
-    var A = (cellW / 2) - padX;   // x amplitude, fits within cell
-    var B = (H / 2) - padY;       // y amplitude, fits within canvas height
-    if (A < 4) A = 4;
-    if (B < 4) B = 4;
-
-    ctx.lineWidth = 2;            // 2px in CSS pixels -> crisp on retina
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-
-    for (var g = 0; g < 7; g++){
-      var gl = glyphs[g];
-      var cx = cellW * g + cellW / 2;
-      var cy = H / 2;
-
-      ctx.beginPath();
-      ctx.strokeStyle = gl.color;
-
-      for (var k = 0; k <= SAMPLES; k++){
-        var t = (k / SAMPLES) * TWO_PI;
-        var x = cx + A * Math.sin(gl.a * t + gl.delta);
-        var y = cy + B * Math.sin(gl.b * t);
-        if (k === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      gl.delta += gl.speed;       // animate the phase -> morphing/rotating
+  // --- Path builder, ported from the site's l(e,t,a,r,o,n,i,s) -------------
+  // a=freqX, b=freqY, delta=phase, res=samples, w=cellW, h=cellH, sx,sy=scale
+  function buildPath(a, b, delta, res, w, h, sx, sy){
+    sx = sx==null?1:sx; sy = sy==null?1:sy;
+    var c = 0.9*w/2*sx, u = 0.9*h/2*sy, d = w/2, m = h/2, out = [];
+    for (var o=0; o<=res; o++){
+      var n = o/res*TWO_PI;
+      var x = d + c*Math.sin(a*n + delta);
+      var y = m + u*Math.sin(b*n);
+      out.push((o===0?'M':'L') + x.toFixed(2) + ',' + y.toFixed(2));
     }
-
-    requestAnimationFrame(draw);
+    return out.join(' ');
   }
 
-  requestAnimationFrame(draw);
+  // --- Layout: place each cell left-to-right honoring gapBefore overlaps ---
+  var layout = [], cursor = 0;
+  for (var i=0; i<7; i++){
+    var L = LETTERS[i];
+    var w = L.width || CELL;
+    var before = (i===0) ? 0 : (L.gapBefore!=null ? L.gapBefore : GAP);
+    cursor += before;
+    var x = cursor;
+    cursor += w;
+    var r = (L.rotation||0) * Math.PI/180;
+    var autoScale = 1/(Math.abs(Math.sin(r)) + Math.abs(Math.cos(r)));
+    layout.push({
+      x:x, width:w,
+      scaleX: L.scaleX != null ? L.scaleX : (L.scale != null ? L.scale : autoScale),
+      scaleY: L.scaleY != null ? L.scaleY : (L.scale != null ? L.scale : autoScale)
+    });
+  }
+  var totalW = cursor;
+
+  // --- Build the SVG: a <g> per letter (translate + rotate), one <path> ----
+  var svg = document.getElementById('hero-svg');
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  // viewBox height = one cell; width = packed total. Aspect ratio drives CSS height.
+  svg.setAttribute('viewBox', '0 0 ' + totalW.toFixed(2) + ' ' + CELL);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  var paths = [];
+  for (var j=0; j<7; j++){
+    var Lj = LETTERS[j], lay = layout[j];
+    var g = document.createElementNS(SVGNS, 'g');
+    var cx = lay.x + lay.width/2;
+    var cy = CELL/2 + (Lj.offsetY||0);
+    g.setAttribute('transform',
+      'translate(' + cx.toFixed(2) + ',' + cy.toFixed(2) + ') ' +
+      'rotate(' + (Lj.rotation||0) + ')');
+    var p = document.createElementNS(SVGNS, 'path');
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', Lj.stroke);
+    p.setAttribute('stroke-width', '4');
+    p.setAttribute('stroke-linecap', 'round');
+    p.setAttribute('stroke-linejoin', 'round');
+    // path is built around local origin: shift by -w/2,-h/2 via inner translate
+    var inner = document.createElementNS(SVGNS, 'g');
+    inner.setAttribute('transform', 'translate(' + (-lay.width/2) + ',' + (-CELL/2) + ')');
+    inner.appendChild(p);
+    g.appendChild(inner);
+    svg.appendChild(g);
+    paths.push({ el:p, lay:lay, cfg:Lj });
+  }
+
+  // --- Intro animation: phase eases from (delta + amount) -> delta ---------
+  // (and rotation eases similarly for P and L). Matches the site's "intro".
+  var start = null;
+  function frame(now){
+    if (start === null) start = now;
+    var elapsed = (now - start) / 1000;
+    var stillAnimating = false;
+
+    for (var k=0; k<7; k++){
+      var cfg = paths[k].cfg, lay = paths[k].lay;
+      var ph = cfg.intro && cfg.intro.phase;
+      var delta = cfg.delta;
+
+      if (ph){
+        var t = (elapsed - (ph.delay||0)) / ph.duration;
+        if (t < 1) stillAnimating = true;
+        t = Math.max(0, Math.min(1, t));
+        var e = easeInOut(t);
+        // phase travels its full "amount" then settles to the configured delta
+        delta = cfg.delta + ph.amount * (1 - e);
+      }
+
+      var d = buildPath(cfg.a, cfg.b, delta, RES, lay.width, CELL, lay.scaleX, lay.scaleY);
+      paths[k].el.setAttribute('d', d);
+    }
+    if (stillAnimating) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // --- Gentle hover wobble per letter (re-plays a small phase nudge) -------
+  for (var h=0; h<7; h++){
+    (function(idx){
+      var g = svg.children[idx];
+      g.style.cursor = 'pointer';
+      g.addEventListener('mouseenter', function(){
+        var t0 = performance.now();
+        function wob(now){
+          var p = (now - t0) / 600;
+          if (p >= 1){
+            var cfg = paths[idx].cfg, lay = paths[idx].lay;
+            paths[idx].el.setAttribute('d',
+              buildPath(cfg.a, cfg.b, cfg.delta, RES, lay.width, CELL, lay.scaleX, lay.scaleY));
+            return;
+          }
+          var cfg2 = paths[idx].cfg, lay2 = paths[idx].lay;
+          var nudge = Math.sin(p*Math.PI) * (Math.PI/3);
+          paths[idx].el.setAttribute('d',
+            buildPath(cfg2.a, cfg2.b, cfg2.delta + nudge, RES, lay2.width, CELL, lay2.scaleX, lay2.scaleY));
+          requestAnimationFrame(wob);
+        }
+        requestAnimationFrame(wob);
+      });
+    })(h);
+  }
 })();
 </script>
 </body>
