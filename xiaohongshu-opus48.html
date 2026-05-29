@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080">
+  <title>Claude Opus 4.8 发了</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #D8D4CC;
+      padding: 48px 40px;
+      font-family: 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+    .card {
+      width: 1080px;
+      height: 1440px;
+      background: #FAFAF8;
+      margin: 0 auto 48px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: #E07A5F;
+      z-index: 1;
+    }
+    .card-cover { padding: 80px; display: flex; flex-direction: column; }
+    .card-content { padding: 80px 80px 60px; display: flex; flex-direction: column; }
+    .section-num {
+      font-size: 12px; font-weight: 700; color: #E07A5F;
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 30px; font-weight: 700; color: #1a1a1a;
+      line-height: 1.3; margin-bottom: 22px;
+    }
+    .divider { width: 48px; height: 2px; background: #E07A5F; margin-bottom: 38px; }
+    .body-text { font-size: 19px; color: #1a1a1a; line-height: 1.85; margin-bottom: 26px; }
+    .secondary { color: #555; }
+    .highlight {
+      background: #FFF5F2; border-left: 3px solid #E07A5F;
+      padding: 26px 30px; margin: 28px 0; border-radius: 0 6px 6px 0;
+    }
+    .highlight p { font-size: 18px; color: #1a1a1a; line-height: 1.85; }
+    .bullet-list { list-style: none; margin: 20px 0; }
+    .bullet-list li {
+      font-size: 18px; color: #1a1a1a; line-height: 1.8;
+      padding-left: 22px; position: relative; margin-bottom: 14px;
+    }
+    .bullet-list li::before {
+      content: '·'; color: #E07A5F; position: absolute;
+      left: 0; font-size: 24px; line-height: 1.5; font-weight: 700;
+    }
+    .tag { font-size: 13px; color: #E07A5F; letter-spacing: 0.12em; font-weight: 600; }
+    .caption { font-size: 14px; color: #999; line-height: 1.7; }
+    .cover-eyebrow {
+      font-size: 12px; font-weight: 700; color: #E07A5F;
+      letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 40px;
+    }
+    .cover-title {
+      font-size: 60px; font-weight: 800; color: #1a1a1a;
+      line-height: 1.1; margin-bottom: 28px; letter-spacing: -0.01em;
+    }
+    .cover-subtitle { font-size: 22px; color: #666; font-weight: 400; line-height: 1.6; }
+    .cover-deco {
+      position: absolute; right: 72px; bottom: 120px;
+      width: 280px; height: 280px; border-radius: 50%;
+      border: 1.5px solid rgba(224,122,95,0.18);
+    }
+    .cover-deco::before {
+      content: ''; position: absolute; top: 28px; left: 28px; right: 28px; bottom: 28px;
+      border-radius: 50%; border: 1px solid rgba(224,122,95,0.12);
+    }
+    .cover-deco::after {
+      content: ''; position: absolute; top: 56px; left: 56px; right: 56px; bottom: 56px;
+      border-radius: 50%; border: 1px solid rgba(224,122,95,0.08);
+    }
+    .cover-line { width: 60px; height: 2px; background: #E07A5F; margin: 32px 0; }
+    .cover-bottom { margin-top: auto; padding-top: 40px; }
+    .big-quote-mark {
+      font-size: 110px; color: #E07A5F; line-height: 0.75;
+      margin-bottom: 24px; font-family: Georgia, 'Times New Roman', serif; opacity: 0.75;
+    }
+    .big-quote-text {
+      font-size: 34px; font-weight: 700; color: #1a1a1a;
+      line-height: 1.55; margin-bottom: 20px;
+    }
+    .big-quote-sub { font-size: 20px; color: #666; line-height: 1.7; margin-bottom: 48px; }
+    .note-box {
+      background: #F5F3EF; padding: 28px 32px;
+      border-radius: 6px; margin-top: 32px;
+    }
+    .note-box p { font-size: 17px; color: #555; line-height: 1.85; }
+    .note-box strong { color: #1a1a1a; font-weight: 600; }
+    .spacer { flex: 1; }
+    .card-footer {
+      margin-top: auto; padding-top: 32px;
+      border-top: 1px solid #EBEBEB;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-footer .tag { font-size: 12px; }
+    .page-num { font-size: 12px; color: #CCC; letter-spacing: 0.1em; }
+  </style>
+</head>
+<body>
+
+<!-- Card 1: Cover -->
+<div class="card card-cover">
+  <div class="cover-eyebrow">深度解读 · 2026.05</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="cover-title">Claude Opus 4.8<br>发了</div>
+    <div class="cover-line"></div>
+    <div class="cover-subtitle">这次更新真正在做什么</div>
+  </div>
+  <div class="cover-bottom">
+    <div class="tag">AI &nbsp;·&nbsp; Claude &nbsp;·&nbsp; 深度解读</div>
+  </div>
+  <div class="cover-deco"></div>
+</div>
+
+<!-- Card 2: 还债 -->
+<div class="card card-content">
+  <div class="section-num">01 &nbsp;/&nbsp; 08</div>
+  <div class="section-title">先说还 4.7 债的部分</div>
+  <div class="divider"></div>
+  <p class="body-text">
+    Opus 4.7 是 4 月 16 日发的，4.8 是 5 月 28 日。中间 41 天。
+    Anthropic 之前没有过这个节奏。
+  </p>
+  <p class="body-text secondary">
+    4.7 当时 Reddit 上「Opus 4.7 is not an upgrade but a serious regression」
+    拿了 2300 赞。X 上说"没比 4.6 进步"的帖子 1.4 万赞。
+    TechCrunch 直接把 4.8 快速发布归因为 "chilly reception to Opus 4.7"。
+  </p>
+  <ul class="bullet-list">
+    <li>effort 控制还给用户了（4.7 的 adaptive reasoning 被骂翻）</li>
+    <li>写代码不那么瞎自信了，会自己标出不确定的地方（官方说降 4 倍幻觉）</li>
+    <li>价格不变 $5 / $25</li>
+  </ul>
+  <div class="spacer"></div>
+  <div class="card-footer">
+    <span class="tag">Claude Opus 4.8</span>
+    <span class="page-num">02</span>
+  </div>
+</div>
+
+<!-- Card 3: 节奏狙击 -->
+<div class="card card-content">
+  <div class="section-num">02 &nbsp;/&nbsp; 08</div>
+  <div class="section-title">41 天发版的节奏逻辑</div>
+  <div class="divider"></div>
+  <p class="body-text">
+    4.7 和 4.8 的 training data cutoff 都是 2026 年 1 月，完全一样。
+    base model 没有重做预训练，迭代的是 post-training——RLHF、safety、tool-use 微调。
+  </p>
+  <div class="highlight">
+    <p>base model 复用，post-training 快速迭代——<br>
+    这才是能频繁切片发版的真正原因。</p>
+  </div>
+  <p class="body-text secondary">
+    时机刚好赶在 GPT-5.6 传言发布前。
+    芯片厂商的打法，搬到大模型行业了。
+  </p>
+  <div class="spacer"></div>
+  <div class="card-footer">
+    <span class="tag">Claude Opus 4.8</span>
+    <span class="page-num">03</span>
+  </div>
+</div>
+
+<!-- Card 4: Fast Mode -->
+<div class="card card-content">
+  <div class="section-num">03 &nbsp;/&nbsp; 08</div>
+  <div class="section-title">Fast Mode "3 倍便宜"<br>是给谁的</div>
+  <div class="divider"></div>
+  <p class="body-text">
+    大部分报道讲错了。"3 倍便宜"是相对自家上一代 Fast Mode，
+    不是相对标准模式。Fast Mode 还是比标准模式贵 2 倍。
+  </p>
+  <p class="body-text secondary">
+    真正的客户是 API 接入的大企业。
+    微软甚至要求员工停止使用 Claude Code，因为账单肉疼。
+  </p>
+  <div class="highlight">
+    <p>对个人开发者来说，订阅档依然最划算。<br>
+    Fast Mode 降价红包不是发给我们的。</p>
+  </div>
+  <div class="spacer"></div>
+  <div class="card-footer">
+    <span class="tag">Claude Opus 4.8</span>
+    <span class="page-num">04</span>
+  </div>
+</div>
+<!-- PLACEHOLDER_BODY_3 -->
