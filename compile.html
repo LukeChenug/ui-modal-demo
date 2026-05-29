@@ -491,12 +491,15 @@
   // so overlapping thin strokes fired dozens of loops that fought each other.
   var t0 = performance.now();
   var HOVER_AMP = Math.PI / 2.5;   // how far a hovered letter nudges its phase
-  var LERP = 0.14;                 // hover smoothing per frame
+  var HOVER_DUR = 0.9;             // seconds — eased like the intro (slow in/out)
   var running = false;
 
   var state = [];
   for (var s=0; s<7; s++){
-    state.push({ hoverTarget:0, hoverCur:0, lastPhase:NaN });
+    // hover tween: animate hoverCur from hoverFrom -> hoverTo over HOVER_DUR,
+    // started at hoverStart. Capturing hoverFrom = current value on each
+    // enter/leave keeps it smooth even mid-transition (no snap, no lerp-snap).
+    state.push({ hoverCur:0, hoverFrom:0, hoverTo:0, hoverStart:-1, lastPhase:NaN });
   }
 
   function introOffset(cfg, elapsed){
@@ -518,10 +521,17 @@
       var intro = introOffset(cfg, elapsed);
       if (intro !== 0) busy = true;
 
-      // smooth approach toward hover target (no stacking, no jitter)
-      st.hoverCur += (st.hoverTarget - st.hoverCur) * LERP;
-      if (Math.abs(st.hoverTarget - st.hoverCur) > 0.0005) busy = true;
-      else st.hoverCur = st.hoverTarget;
+      // duration-based eased hover tween (same easeInOut feel as the intro)
+      if (st.hoverStart >= 0){
+        var ht = (elapsed - st.hoverStart) / HOVER_DUR;
+        if (ht >= 1){
+          st.hoverCur = st.hoverTo;
+          st.hoverStart = -1;              // tween finished
+        } else {
+          st.hoverCur = st.hoverFrom + (st.hoverTo - st.hoverFrom) * easeInOut(ht);
+          busy = true;
+        }
+      }
 
       var phase = cfg.delta + intro + st.hoverCur;
 
@@ -542,13 +552,20 @@
   }
   kick();  // run the intro
 
-  // Hover just flips a target; the single loop eases there smoothly.
+  // Hover starts an eased tween from the CURRENT value toward the target.
+  function startHover(idx, target){
+    var st = state[idx];
+    st.hoverFrom = st.hoverCur;
+    st.hoverTo = target;
+    st.hoverStart = (performance.now() - t0) / 1000;
+    kick();
+  }
   for (var h=0; h<7; h++){
     (function(idx){
       var g = svg.children[idx];
       g.style.cursor = 'pointer';
-      g.addEventListener('mouseenter', function(){ state[idx].hoverTarget = HOVER_AMP; kick(); });
-      g.addEventListener('mouseleave', function(){ state[idx].hoverTarget = 0;        kick(); });
+      g.addEventListener('mouseenter', function(){ startHover(idx, HOVER_AMP); });
+      g.addEventListener('mouseleave', function(){ startHover(idx, 0); });
     })(h);
   }
 })();
